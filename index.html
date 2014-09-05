@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+
+
+<body style='height: 5000px'>
+   
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+    function isScrolledIntoView(elem) {
+        var docViewTop = $(window).scrollTop();
+        var docViewBottom = docViewTop + $(window).height();
+
+        var elemTop = $(elem).offset().top;
+        var elemBottom = elemTop + $(elem).height();
+
+        return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop));
+    }
+
+    var socket = io();
+
+
+    $(window).scroll(function() {
+
+            socket.emit('scrolled', isScrolledIntoView('#ad'));
+
+    });
+
+
+    </script>
+
+    <div id="ad" style="position: relative; top: 3000px; width: 300px; height: 250px; background: blue">Ad</div>
+    <br>
+    <br>
+    <br>
+    <br>
+</body>
+
+</html>

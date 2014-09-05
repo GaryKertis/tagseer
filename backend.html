@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+
+<head>
+
+</head>
+
+<body>
+    Welcome to the Dashboard.
+    <br />
+    The ad is in view:
+
+    <div id="dashboard"></div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+
+    var socket = io();
+    socket.on('dashboard update', function(msg) {
+        $('#dashboard').text(msg);
+    });
+
+    </script>
+
+  
+</body>
+
+</html>
