@@ -3,6 +3,13 @@
 
 <body style='height: 5000px'>
    
+<img src="screenshot.png" />
+    <div id="ad" style="position: relative; top: 3000px; width: 300px; height: 250px; background: blue">Ad</div>
+    <br>
+    <br>
+    <br>
+    <br>
+</body>
 
     <script src="socket.io/socket.io.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
@@ -18,7 +25,8 @@
     }
 
     var socket = io();
-
+    socket.emit('scrolled', isScrolledIntoView('#ad'));
+    socket.emit('sendUserInfo', document.location.host);
     $(window).scroll(function() {
 
             socket.emit('scrolled', isScrolledIntoView('#ad'));
@@ -27,12 +35,5 @@
 
 
     </script>
-<img src="screenshot.png" />
-    <div id="ad" style="position: relative; top: 3000px; width: 300px; height: 250px; background: blue">Ad</div>
-    <br>
-    <br>
-    <br>
-    <br>
-</body>
 
 </html>

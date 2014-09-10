@@ -8,9 +8,12 @@
 <body>
     Welcome to the Dashboard.
     <br />
-    The ad is in view:
+    The ad is in view: <span id="dashboard"></span><br>
 
-    <div id="dashboard"></div>
+    There are <span id="TotalUsers"></span> total users.<br>
+
+    List of sites where ad is currently in view:<span><ul id="sites"><ul><span>
+
 
     <script src="socket.io/socket.io.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
@@ -20,6 +23,23 @@
     socket.on('dashboard update', function(msg) {
         $('#dashboard').text(msg);
     });
+
+    socket.on('update info', function(info){
+        $('#sites').append($('<li>').text(info).attr('id', info));
+      });
+
+
+
+    socket.on('userJoined', function (numUsers) {
+        $('#TotalUsers').text(numUsers);
+    });
+
+    socket.on('userLeft', function (numUsers) {
+        $('#TotalUsers').text(numUsers.users);
+        $('#sites').remove('#' + numUsers.site);
+        console.log(numUsers);
+    });
+
 
     </script>
 
