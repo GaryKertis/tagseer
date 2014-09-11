@@ -15,6 +15,10 @@ app.get('/', function(req, res) {
     res.sendFile('/index.html', options);
 });
 
+app.get('/pixel', function(req, res) {
+    res.sendFile('/pixel.js', options);
+});
+
 app.get('/backend', function(req, res) {
     res.sendFile('/backend.html', options);
 })
