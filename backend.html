@@ -36,8 +36,8 @@
     socket.on('user left', function (data) {
         console.log(data);
         $('#TotalUsers').text(data.susers);
-       $('#' + data.ssite.remove();
-       $('#' + data.sreferrer.remove();
+       $('#' + data.ssite).remove();
+       $('#' + data.sreferrer).remove();
 	console.log('data is' + data);
         console.log('client removing' + data.ssite);
     });
