@@ -12,8 +12,8 @@
 
     There are <span id="TotalUsers"></span> total users.<br>
 
-    List of sites where ad is currently in view:<span><ul id="sites"><ul><span>
-
+    List of sites where ad is currently in view:<span><ul id="sites"></ul><span><br>
+    List of referrers: <span><ul id="referrers"></ul></span>
 
     <script src="socket.io/socket.io.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
@@ -25,7 +25,8 @@
     });
 
     socket.on('update info', function(info){
-        $('#sites').append($('<li>').text(info).attr('id', info));
+        $('#sites').append($('<li>').text(info.hosts).attr('id', info.hosts));
+        $('#referrers').append($('<li>').text(info.referrers).attr('id', info.referrers));
       });
 
     socket.on('userJoined', function (numUsers) {
@@ -36,6 +37,7 @@
         console.log(data);
         $('#TotalUsers').text(data.susers);
        $('#' + data.ssite.split(':')[0]).remove();
+       $('#' + data.sreferrer.split(':')[0]).remove();
 	console.log('data is' + data);
         console.log('client removing' + data.ssite.split(':')[0]);
     });

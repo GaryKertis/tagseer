@@ -30,21 +30,24 @@ io.on('connect', function(socket) {
 
     socket.on('sendUserInfo', function(site) {
         io.emit('update info', site);
-        socket.site = site;
+        socket.sites = site.hosts;
+        socket.referrers = site.referrers;
         // add the client's username to the global list
-        sites[site] = site;
-        console.log('now connecting' + socket.site);
+        sites[site] = site.referrers;
+        console.log('now connecting' + socket.sites);
     });
 
 
     socket.on('disconnect', function() {
         --numUsers;
-        delete sites[socket.site];
+        delete sites[socket.sites];
+        delete sites[socket.referrers];
         socket.broadcast.emit('user left', {
-          susers: numUsers,
-          ssite: socket.site
+            susers: numUsers,
+            ssite: socket.sites,
+            sreferrer: socket.referrers
         });
-        console.log("server disconnect " + socket.site);
+        console.log("server disconnect " + socket.sites);
     });
 
 });

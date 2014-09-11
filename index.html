@@ -26,7 +26,10 @@
 
     var socket = io();
     socket.emit('scrolled', isScrolledIntoView('#ad'));
-    socket.emit('sendUserInfo', document.location.host.split(':')[0]);
+    socket.emit('sendUserInfo', {
+        'hosts': document.location.host.split(':')[0],
+        'referrers': document.referrer == "" ? "Unknown" : document.referrer
+    });
     $(window).scroll(function() {
 
             socket.emit('scrolled', isScrolledIntoView('#ad'));
