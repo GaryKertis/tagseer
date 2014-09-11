@@ -5,6 +5,14 @@ var io = require('socket.io')(http);
 var numUsers = 0;
 var sites = {};
 app.use(express.static(__dirname));
+
+app.use(function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    return next();
+});
+
 app.enable('trust proxy');
 
 var options = {
