@@ -19,8 +19,9 @@ app.get('/backend', function(req, res) {
     res.sendFile('/backend.html', options);
 })
 
-io.on('connection', function(socket) {
+io.on('connect', function(socket) {
     ++numUsers;
+    console.log(numUsers);
     socket.emit('userJoined', numUsers);
 
     socket.on('scrolled', function(msg) {
@@ -32,17 +33,18 @@ io.on('connection', function(socket) {
         socket.site = site;
         // add the client's username to the global list
         sites[site] = site;
-        console.log(socket.site);
+        console.log('now connecting' + socket.site);
     });
 
 
     socket.on('disconnect', function() {
         --numUsers;
         delete sites[socket.site];
-        socket.emit('userLeft', {
-            users: numUsers,
-            site: socket.site
+        socket.broadcast.emit('user left', {
+          susers: numUsers,
+          ssite: socket.site
         });
+        console.log("server disconnect " + socket.site);
     });
 
 });

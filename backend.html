@@ -18,7 +18,7 @@
     <script src="socket.io/socket.io.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
-
+    $(function() {	
     var socket = io();
     socket.on('dashboard update', function(msg) {
         $('#dashboard').text(msg);
@@ -28,18 +28,18 @@
         $('#sites').append($('<li>').text(info).attr('id', info));
       });
 
-
-
     socket.on('userJoined', function (numUsers) {
         $('#TotalUsers').text(numUsers);
     });
 
-    socket.on('userLeft', function (numUsers) {
-        $('#TotalUsers').text(numUsers.users);
-        $('#sites').remove('#' + numUsers.site);
-        console.log(numUsers);
+    socket.on('user left', function (data) {
+        console.log(data);
+        $('#TotalUsers').text(data.susers);
+       $('#' + data.ssite.split(':')[0]).remove();
+	console.log('data is' + data);
+        console.log('client removing' + data.ssite.split(':')[0]);
     });
-
+});
 
     </script>
 
