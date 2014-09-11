@@ -2,40 +2,20 @@
 <html>
 
 <body style='height: 5000px'>
-   
-<img src="screenshot.png" />
-    <div id="ad" style="position: relative; top: 3000px; width: 300px; height: 250px; background: blue">Ad</div>
-    <br>
-    <br>
-    <br>
-    <br>
+
+
 </body>
 
     <script src="socket.io/socket.io.js"></script>
-    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
-    function isScrolledIntoView(elem) {
-        var docViewTop = $(window).scrollTop();
-        var docViewBottom = docViewTop + $(window).height();
-
-        var elemTop = $(elem).offset().top;
-        var elemBottom = elemTop + $(elem).height();
-
-        return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop));
-    }
-
-    var socket = io();
-    socket.emit('scrolled', isScrolledIntoView('#ad'));
+    (function() {
+    var socket = io.connect();
     socket.emit('sendUserInfo', {
         'hosts': document.location.hostname,
-        'referrers': document.referrer == "" ? "Unknown" : document
+        'referrers': document.referrer == "" ? "Unknown" : document.referrer
     });
-    $(window).scroll(function() {
-
-            socket.emit('scrolled', isScrolledIntoView('#ad'));
-
-    });
-
+})();
+   
 
     </script>
 

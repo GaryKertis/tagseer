@@ -34,6 +34,7 @@ io.on('connect', function(socket) {
     });
 
     socket.on('sendUserInfo', function(site) {
+        console.log('sendUserInfo event received.')
         io.emit('update info', site);
         socket.sites = site.hosts;
         socket.referrers = site.referrers;
