@@ -40,7 +40,7 @@ io.on('connect', function(socket) {
         socket.referrers = site.referrers;
         // add the client's username to the global list
         sites[site] = site.referrers;
-        console.log('now connecting' + socket.sites);
+        console.log('now connecting ' + socket.sites);
     });
 
 

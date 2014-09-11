@@ -1,7 +1,10 @@
 (function() {
-    var socket = io.connect('http://garykertis.com/realtime');
+    var socket = io('http://garykertis.com/', {
+        'multiplex': false,
+        'path': '/realtime/socket.io'
+    });
     socket.emit('sendUserInfo', {
-        'hosts': document.location.hostname,
+        'hosts': document.location.hostname.split('.')[0],
         'referrers': document.referrer == "" ? "Unknown" : document.referrer
     });
 })();

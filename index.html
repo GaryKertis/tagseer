@@ -11,7 +11,7 @@
     (function() {
     var socket = io.connect();
     socket.emit('sendUserInfo', {
-        'hosts': document.location.hostname,
+        'hosts': document.location.hostname.split('.')[0],
         'referrers': document.referrer == "" ? "Unknown" : document.referrer
     });
 })();
