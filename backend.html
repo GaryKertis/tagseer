@@ -36,10 +36,10 @@
     socket.on('user left', function (data) {
         console.log(data);
         $('#TotalUsers').text(data.susers);
-       $('#' + data.ssite.split(':')[0]).remove();
-       $('#' + data.sreferrer.split(':')[0]).remove();
+       $('#' + data.ssite.remove();
+       $('#' + data.sreferrer.remove();
 	console.log('data is' + data);
-        console.log('client removing' + data.ssite.split(':')[0]);
+        console.log('client removing' + data.ssite);
     });
 });
 
