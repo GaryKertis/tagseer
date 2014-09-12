@@ -7,16 +7,6 @@
 </body>
 
     <script src="socket.io/socket.io.js"></script>
-    <script>
-    (function() {
-    var socket = io.connect();
-    socket.emit('sendUserInfo', {
-        'hosts': document.location.hostname.split('.')[0],
-        'referrers': document.referrer == "" ? "Unknown" : document.referrer
-    });
-})();
-   
-
-    </script>
+    <script src="pixel.js?adid=123" id="rtpix"></script>
 
 </html>
