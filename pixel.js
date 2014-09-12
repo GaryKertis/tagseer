@@ -1,7 +1,7 @@
 (function() {
     var socket = io('http://garykertis.com/', {
         'multiplex': false,
-        'path': '/realtime/socket.io'
+        'path': '/socket.io'
     });
     socket.emit('sendUserInfo', {
         'hosts': document.location.hostname.split('.')[0],
