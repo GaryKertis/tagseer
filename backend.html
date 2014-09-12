@@ -6,31 +6,28 @@
 </head>
 
 <body>
-    Welcome to the Dashboard.
-    <br />
-    The ad is in view: <span id="dashboard"></span><br>
 
     There are <span id="TotalUsers"></span> total users.<br>
 
-    List of sites where ad is currently in view:<span><ul id="sites"></ul><span><br>
-    List of referrers: <span><ul id="referrers"></ul></span>
+
+    <ul id="users"></ul>
+
 
     <script src="socket.io/socket.io.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
     $(function() {	
     var socket = io();
-    socket.on('dashboard update', function(msg) {
-        $('#dashboard').text(msg);
-    });
 
     socket.on('update info', function(info){
-        $('#sites').append($('<li>').text(info.hosts).attr('id', info.hosts));
-        $('#referrers').append($('<li>').text(info.referrers).attr('id', info.referrers));
+        $('#'+info.id).append($('<li>').text(info.hosts).attr('id', info.hosts));
+        $('#'+info.id).append($('<li>').text(info.referrers).attr('id', info.referrers));
       });
 
-    socket.on('userJoined', function (numUsers) {
-        $('#TotalUsers').text(numUsers);
+    socket.on('userJoined', function (data) {
+        console.log(data.id);
+        $('#TotalUsers').text(data.users);
+        $('#users').append('<li id='+data.id+' class="user"></li>');
     });
 
     socket.on('user left', function (data) {

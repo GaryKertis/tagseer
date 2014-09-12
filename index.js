@@ -3,7 +3,6 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var numUsers = 0;
-var sites = {};
 
 var enableCORS = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', 'http://thelivre.com');
@@ -45,28 +44,29 @@ app.get('/backend', function(req, res) {
 
 io.on('connect', function(socket) {
     ++numUsers;
-    console.log(numUsers);
-    socket.emit('userJoined', numUsers);
-
-    socket.on('scrolled', function(msg) {
-        io.emit('dashboard update', msg);
+    socket.uid = Math.random();
+    socket.emit('userJoined', {
+        'total': numUsers,
+        'id': socket.uid
     });
 
-    socket.on('sendUserInfo', function(site) {
+    console.log("User joined at" + socket.uid);
+
+    socket.on('sendUserInfo', function(data) {
         console.log('sendUserInfo event received.')
-        io.emit('update info', site);
-        socket.sites = site.hosts;
-        socket.referrers = site.referrers;
+        data.id = socket.uid;
+        io.emit('update info', data);
+        socket.sites = data.hosts;
+        socket.referrers = data.referrers;
         // add the client's username to the global list
-        sites[site] = site.referrers;
+
         console.log('now connecting ' + socket.sites);
     });
 
 
     socket.on('disconnect', function() {
         --numUsers;
-        delete sites[socket.sites];
-        delete sites[socket.referrers];
+
         socket.broadcast.emit('user left', {
             susers: numUsers,
             ssite: socket.sites,

@@ -68,7 +68,7 @@ if (typeof jQuery == 'undefined') {
             realtime(jQuery);
 
 
-            if (thisPageUsingOtherJSLibrary) {
+            if (typeof thisPageUsingOtherJSLibrary !== "undefined") {
 
                 realtime(jQuery);
 
@@ -76,6 +76,7 @@ if (typeof jQuery == 'undefined') {
             } else {
 
                 // Use .noConflict(), then run your jQuery Code
+                $.noConflict();
                 realtime(jQuery);
 
 

@@ -1,12 +1,21 @@
 <!doctype html>
 <html>
 
-<body style='height: 5000px'>
-
-
-</body>
+<head>
 
     <script src="socket.io/socket.io.js"></script>
-    <script src="pixel.js?adid=123" id="rtpix"></script>
+    <script>
+    var script = document.createElement("script");
+	script.src = "pixel.js?adid=123&ts=" + new Date().getTime();
+	script.id = "rtpix";
+	document.getElementsByTagName("head")[0].appendChild(script);
+   </script>
+
+</head>
+
+<body style='height: 5000px'>
+
+ </body>
+
 
 </html>
