@@ -3,6 +3,17 @@
 
 <head>
 
+<style>
+.user { 
+    border: 1px solid black;
+    width: 200px;
+    height: 200px;
+    float: left;
+    margin: 5px;
+    padding: 5px;
+}
+</style>
+
 </head>
 
 <body>
@@ -10,7 +21,7 @@
     There are <span id="TotalUsers"></span> total users.<br>
 
 
-    <ul id="users"></ul>
+    <div id="users"></div>
 
 
     <script src="socket.io/socket.io.js"></script>
@@ -20,23 +31,21 @@
     var socket = io();
 
     socket.on('update info', function(info){
+        $('#users').append('<div id='+info.id+' class="user"></div>');
         $('#'+info.id).append($('<li>').text(info.hosts).attr('id', info.hosts));
         $('#'+info.id).append($('<li>').text(info.referrers).attr('id', info.referrers));
       });
 
     socket.on('userJoined', function (data) {
+        console.log('A user joined');
         console.log(data.id);
-        $('#TotalUsers').text(data.users);
-        $('#users').append('<li id='+data.id+' class="user"></li>');
+        $('#TotalUsers').text(data.total - 1);
     });
 
     socket.on('user left', function (data) {
-        console.log(data);
-        $('#TotalUsers').text(data.susers);
-       $('#' + data.ssite).remove();
-       $('#' + data.sreferrer).remove();
-	console.log('data is' + data);
-        console.log('client removing' + data.ssite);
+        $('#TotalUsers').text(data.susers - 1);
+       $('#' + data.suid).remove();
+        console.log('client removing' + data.suid);
     });
 });
 

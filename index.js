@@ -44,10 +44,9 @@ app.get('/backend', function(req, res) {
 
 io.on('connect', function(socket) {
     ++numUsers;
-    socket.uid = Math.random();
-    socket.emit('userJoined', {
-        'total': numUsers,
-        'id': socket.uid
+    socket.uid = "u" + Math.round(Math.random() * (100000000 - 1) + 1);
+    socket.broadcast.emit('userJoined', {
+        'total': numUsers
     });
 
     console.log("User joined at" + socket.uid);
@@ -70,9 +69,10 @@ io.on('connect', function(socket) {
         socket.broadcast.emit('user left', {
             susers: numUsers,
             ssite: socket.sites,
-            sreferrer: socket.referrers
+            sreferrer: socket.referrers,
+            suid: socket.uid
         });
-        console.log("server disconnect " + socket.sites);
+        console.log("server disconnect " + socket.uid);
     });
 
 });

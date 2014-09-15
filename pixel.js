@@ -1,7 +1,7 @@
 // Only do anything if jQuery isn't defined
 
 realtime = (function($) {
-
+    console.log("Starting realtime script");
     var scriptid = document.getElementById('rtpix').src;
 
     function getParameterByName(name) {
@@ -64,8 +64,6 @@ if (typeof jQuery == 'undefined') {
         if (typeof jQuery == 'undefined') {
             // Super failsafe - still somehow failed...
         } else {
-            // jQuery loaded! Make sure to use .noConflict just in case
-            realtime(jQuery);
 
 
             if (typeof thisPageUsingOtherJSLibrary !== "undefined") {
