@@ -2,6 +2,10 @@
 
 realtime = (function($) {
     console.log("Starting realtime script");
+
+    var rt_creatives = [];
+
+
     var scriptid = document.getElementById('rtpix').src;
 
     function getParameterByName(name) {
@@ -15,13 +19,12 @@ realtime = (function($) {
     if (typeof adid !== 'undefined') console.log(adid);
 
     if (typeof googletag !== 'undefined') {
-
         for (unit in googletag.slot_manager_instance.b) {
-            console.log($('#' + unit));
-
-
+            creative = $('#' + unit).find('iframe').contents().find('object')[0];
+            if (typeof creative === "undefined") creative = $('#' + unit).find('iframe').contents().find('img')[0];
+            if (typeof creative === "undefined") creative = $('#' + unit).find('iframe').contents().find('iframe')[0];
+            if (typeof creative !== "undefined") rt_creatives.push(creative.outerHTML);
         }
-
     }
 
     var socket = io('http://' + document.getElementById('rtpix').src.split('/')[2], {
@@ -31,7 +34,8 @@ realtime = (function($) {
 
     socket.emit('sendUserInfo', {
         'hosts': document.location.hostname.split('.')[0],
-        'referrers': document.referrer == "" ? "Unknown" : document.referrer
+        'creatives': rt_creatives,
+        'referrers': document.referrer
     });
 });
 

@@ -49,17 +49,15 @@ io.on('connect', function(socket) {
         'total': numUsers
     });
 
-    console.log("User joined at" + socket.uid);
+    console.log(new Date().toString() + " a user joined, id #" + socket.uid);
 
     socket.on('sendUserInfo', function(data) {
-        console.log('sendUserInfo event received.')
         data.id = socket.uid;
-        io.emit('update info', data);
         socket.sites = data.hosts;
         socket.referrers = data.referrers;
+        io.emit('update info', data);
         // add the client's username to the global list
-
-        console.log('now connecting ' + socket.sites);
+        console.log('     on site ' + socket.sites);
     });
 
 
@@ -68,11 +66,9 @@ io.on('connect', function(socket) {
 
         socket.broadcast.emit('user left', {
             susers: numUsers,
-            ssite: socket.sites,
-            sreferrer: socket.referrers,
             suid: socket.uid
         });
-        console.log("server disconnect " + socket.uid);
+        console.log(new Date().toString() + " the user disconnected, id #" + socket.uid);
     });
 
 });

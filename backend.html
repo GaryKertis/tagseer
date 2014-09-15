@@ -6,8 +6,6 @@
 <style>
 .user { 
     border: 1px solid black;
-    width: 200px;
-    height: 200px;
     float: left;
     margin: 5px;
     padding: 5px;
@@ -32,8 +30,11 @@
 
     socket.on('update info', function(info){
         $('#users').append('<div id='+info.id+' class="user"></div>');
-        $('#'+info.id).append($('<li>').text(info.hosts).attr('id', info.hosts));
-        $('#'+info.id).append($('<li>').text(info.referrers).attr('id', info.referrers));
+        $('#'+info.id).append($('<li>').text(info.hosts));
+        $('#'+info.id).append($('<li>').text(info.referrers));
+        for (creative in info.creatives) {
+        $('#'+info.id).append($('<li>').html(info.creatives[creative]));
+        }
       });
 
     socket.on('userJoined', function (data) {
