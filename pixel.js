@@ -12,7 +12,6 @@ realtime = (function($) {
         "bid": []
     };
 
-
     var scriptid = document.getElementById('rtpix').src;
 
     function getParameterByName(name) {
@@ -62,9 +61,35 @@ realtime = (function($) {
 
         }
 
+
+
+        function isVisible(el) {
+            upperBound = el.offset().top;
+            lowerBound = upperBound + el.height();
+            leftBound = el.offset().left;
+            rightBound = leftBound + el.width();
+            vp_upperBound = $(window).scrollTop();
+            vp_lowerBound = vp_upperBound + $(window).height();
+            vp_leftBound = $(window).scrollLeft();
+            distanceFromTopOfViewPort = upperBound - vp_upperBound;
+            scrolledPast = (lowerBound - vp_upperBound) / el.height();
+            scrolledOnto = (vp_lowerBound - upperBound) / el.height();
+            if (vp_upperBound > lowerBound || vp_lowerBound < upperBound) {
+                console.log('//element is not in view');
+            } else {
+
+                if (scrolledPast > 1 && scrolledOnto > 1) {
+                    //element is fully in view,
+                    console.log("100%");
+                } else {
+                    console.log(Math.min(scrolledPast, scrolledOnto));
+                }
+            }
+
+
+        }
+
         //console.log(rt_creatives);
-
-
     }
 
     var socket = io('http://' + document.getElementById('rtpix').src.split('/')[2], {
@@ -73,7 +98,7 @@ realtime = (function($) {
     });
 
     socket.emit('sendUserInfo', {
-        'hosts': document.location.hostname.split('.')[0],
+        'hosts': document.location.hostname,
         'creatives': rt_creatives,
         'referrers': document.referrer
     });
