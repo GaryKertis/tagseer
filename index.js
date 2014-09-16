@@ -53,8 +53,7 @@ io.on('connect', function(socket) {
 
     socket.on('sendUserInfo', function(data) {
         data.id = socket.uid;
-        socket.sites = data.hosts;
-        socket.referrers = data.referrers;
+        //console.log(data);
         io.emit('update info', data);
         // add the client's username to the global list
         console.log('     on site ' + socket.sites);

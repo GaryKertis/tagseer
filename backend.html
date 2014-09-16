@@ -32,9 +32,12 @@
         $('#users').append('<div id='+info.id+' class="user"></div>');
         $('#'+info.id).append($('<li>').text(info.hosts));
         $('#'+info.id).append($('<li>').text(info.referrers));
-        for (creative in info.creatives) {
-        $('#'+info.id).append($('<li>').html(info.creatives[creative]));
+        for (number in info.creatives.tag) {
+        $('#'+info.id).append($('<li>').html("Bid: " + info.creatives.pm_bid[number]));
+        $('#'+info.id).append($('<li>').html(info.creatives.tag[number]));
+
         }
+        
       });
 
     socket.on('userJoined', function (data) {

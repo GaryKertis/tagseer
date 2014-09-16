@@ -3,7 +3,14 @@
 realtime = (function($) {
     console.log("Starting realtime script");
 
-    var rt_creatives = [];
+    var rt_creatives = {
+        "tag": [],
+        "pm_bid": []
+    };
+    var pm_bids = {
+        "bidid": [],
+        "bid": []
+    };
 
 
     var scriptid = document.getElementById('rtpix').src;
@@ -19,12 +26,45 @@ realtime = (function($) {
     if (typeof adid !== 'undefined') console.log(adid);
 
     if (typeof googletag !== 'undefined') {
+
+        if (typeof progKeyValueMap !== 'undefined') {
+            for (slot in progKeyValueMap) {
+
+                progKeyValueMap[slot].indexOf(';') > 0 ? this_slot = progKeyValueMap[slot].split(";") : this_slot = progKeyValueMap[slot].split("=");
+                if (this_slot[0] == "bidstatus") {
+                    pm_bids.bidid.push(this_slot[5]);
+                    pm_bids.bid.push(this_slot[3]);
+                } else {
+                    pm_bids.bidid.push(this_slot[3]);
+                    pm_bids.bid.push(this_slot[1]);
+                }
+            }
+        }
+
         for (unit in googletag.slot_manager_instance.b) {
             creative = $('#' + unit).find('iframe').contents().find('object')[0];
             if (typeof creative === "undefined") creative = $('#' + unit).find('iframe').contents().find('img')[0];
             if (typeof creative === "undefined") creative = $('#' + unit).find('iframe').contents().find('iframe')[0];
-            if (typeof creative !== "undefined") rt_creatives.push(creative.outerHTML);
+            if (typeof creative !== "undefined") {
+                rt_creatives.tag.push(creative.outerHTML);
+                var found = false;
+                for (arr in googletag.slot_manager_instance.b[unit].d) {
+                    for (number in pm_bids.bidid) {
+                        if (googletag.slot_manager_instance.b[unit].d[arr][0] == pm_bids.bidid[number]) {
+                            rt_creatives.pm_bid.push(pm_bids.bid[number]);
+                            found = true;
+                        }
+
+                    }
+                }
+                if (!found) rt_creatives.pm_bid.push("This slot is not enabled.");
+            }
+
         }
+
+        //console.log(rt_creatives);
+
+
     }
 
     var socket = io('http://' + document.getElementById('rtpix').src.split('/')[2], {
