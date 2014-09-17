@@ -3,15 +3,18 @@
 realtime = (function($) {
     console.log("Starting realtime script");
 
-    var rt_creatives = {
-        "id": [],
-        "tag": [],
-        "pm_bid": []
-    };
+    var socket = io('http://' + document.getElementById('rtpix').src.split('/')[2], {
+        'multiplex': false,
+        'path': '/socket.io'
+    });
+
+    var rt_creatives = new Object;
+
     var pm_bids = {
         "bidid": [],
         "bid": []
     };
+
 
     var scriptid = document.getElementById('rtpix').src;
 
@@ -42,58 +45,73 @@ realtime = (function($) {
         }
 
         for (unit in googletag.slot_manager_instance.b) {
-            rt_creatives.id.push(unit);
+            rt_creatives[unit] = {
+                id: unit
+            };
+            var foundtag = false;
             creative = $('#' + unit).find('iframe').contents().find('object');
 
             if (!creative.length) creative = $('#' + unit).find('iframe').contents().find('img');
             if (!creative.length) creative = $('#' + unit).find('iframe').contents().find('iframe');
             if (creative.length) {
-
-                rt_creatives.tag.push(creative[0].outerHTML);
-                isVisible(unit);
                 var foundtag = true;
-                var found = false;
+                rt_creatives[unit].tag = creative[0].outerHTML;
+                isVisible(unit);
+                var foundbid = false;
                 for (arr in googletag.slot_manager_instance.b[unit].d) {
                     for (number in pm_bids.bidid) {
                         if (googletag.slot_manager_instance.b[unit].d[arr][0] == pm_bids.bidid[number]) {
-                            rt_creatives.pm_bid.push(pm_bids.bid[number]);
+                            rt_creatives[unit].pm_bid = pm_bids.bid[number];
                             foundbid = true;
                         }
 
                     }
                 }
-                if (!foundbid) rt_creatives.pm_bid.push("This slot is not enabled.");
+                if (!foundbid) rt_creatives[unit].pm_bid = "This slot is not enabled.";
             }
-            if (!foundtag) rt_creatives.tag.push("Could not find a tag.");
+            if (!foundtag) {
+                rt_creatives[unit].tag = "Could not find a tag.";
+                rt_creatives[unit].pm_bid = "This slot is not enabled."
+            }
 
         }
 
     }
 
-    function isVisible(el) {
-        el = $('#' + el);
+    function isVisible(unit) {
+
+        rt_creatives[unit].visible = 0;
         $(window).scroll(function() {
 
-            upperBound = el.offset().top;
-            lowerBound = upperBound + el.height();
-            leftBound = el.offset().left;
-            rightBound = leftBound + el.width();
+            upperBound = $('#' + unit).offset().top;
+            lowerBound = upperBound + $('#' + unit).height();
+
+            leftBound = $('#' + unit).offset().left;
+            rightBound = leftBound + $('#' + unit).width();
             vp_upperBound = $(window).scrollTop();
             vp_lowerBound = vp_upperBound + $(window).height();
             vp_leftBound = $(window).scrollLeft();
             distanceFromTopOfViewPort = upperBound - vp_upperBound;
-            scrolledPast = (lowerBound - vp_upperBound) / el.height();
-            scrolledOnto = (vp_lowerBound - upperBound) / el.height();
-
+            scrolledPast = (lowerBound - vp_upperBound) / $('#' + unit).height();
+            scrolledOnto = (vp_lowerBound - upperBound) / $('#' + unit).height();
 
             if (vp_upperBound > lowerBound || vp_lowerBound < upperBound) {
                 //console.log('//element is not in view');
+
             } else {
 
                 if (scrolledPast > 1 && scrolledOnto > 1) {
-                    rt_creatives.id
+                    rt_creatives[unit].visible = 1;
+
+
                 } else {
-                    console.log(el.attr('id') + " unit is " + Math.min(scrolledPast, scrolledOnto) + "% visible.");
+                    rt_creatives[unit].visible = Math.round(Math.min(scrolledPast, scrolledOnto) * 100) / 100;
+                    console.log(rt_creatives[unit].id + ' visibility is ' + rt_creatives[unit].visible);
+
+                    socket.emit('update visibility', {
+                        'creatives': rt_creatives,
+                    });
+
                 }
             }
         });
@@ -103,11 +121,8 @@ realtime = (function($) {
     //console.log(rt_creatives);
 
 
-    var socket = io('http://' + document.getElementById('rtpix').src.split('/')[2], {
-        'multiplex': false,
-        'path': '/socket.io'
-    });
 
+    console.log(rt_creatives);
     socket.emit('sendUserInfo', {
         'hosts': document.location.hostname,
         'creatives': rt_creatives,

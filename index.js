@@ -58,9 +58,18 @@ io.on('connect', function(socket) {
         io.emit('update info', data);
         // add the client's username to the global list
         console.log('     on site ' + data.hosts);
-        console.log('          with ad units ' + data.creatives.id)
+        for (creative in data.creatives) {
+            console.log('          with data ' + creative);
+        }
     });
 
+    socket.on('update visibility', function(data) {
+        data.id = socket.uid;
+        io.emit('update backend visible', data);
+        for (creative in data.creatives) {
+            console.log(data.creatives[creative].id + ' is ' + data.creatives[creative].visible);
+        }
+    });
 
     socket.on('disconnect', function() {
         --numUsers;

@@ -31,14 +31,19 @@
 
     socket.on('update info', function(info){
         $('#users').append('<div id='+info.id+' class="user"></div>');
-        $('#'+info.id).append($('<li>').text(info.hosts));
-        $('#'+info.id).append($('<li>').text(info.referrers));
-        for (number in info.creatives.tag) {
-        $('#'+info.id).append($('<li>').html("Bid: " + info.creatives.pm_bid[number]));
-        $('#'+info.id).append($('<li>').html(info.creatives.tag[number]));
+        $('#'+info.id).append($('<div>').text(info.hosts));
+        $('#'+info.id).append($('<div>').text(info.referrers));
+    for (number in info.creatives) {
+        $('#'+info.id).append(info.creatives[number].id+'<div id='+info.creatives[number].id+' class="visible"></div>');
+        $('#'+info.id).append($('<li>').html("Bid: " + info.creatives[number].pm_bid));
+        $('#'+info.id).append($('<li>').html(info.creatives[number].tag)); 
+    }
+      });
 
-        }
-        
+    socket.on('update backend visible', function(info){
+    for (number in info.creatives) {
+        $('#'+info.id + ' #'+info.creatives[number].id).text("Visible: " + info.creatives[number].visible);
+    }
       });
 
     socket.on('userJoined', function (data) {
