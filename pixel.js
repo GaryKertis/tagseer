@@ -4,6 +4,7 @@ realtime = (function($) {
     console.log("Starting realtime script");
 
     var rt_creatives = {
+        "id": [],
         "tag": [],
         "pm_bid": []
     };
@@ -41,29 +42,38 @@ realtime = (function($) {
         }
 
         for (unit in googletag.slot_manager_instance.b) {
-            creative = $('#' + unit).find('iframe').contents().find('object')[0];
-            if (typeof creative === "undefined") creative = $('#' + unit).find('iframe').contents().find('img')[0];
-            if (typeof creative === "undefined") creative = $('#' + unit).find('iframe').contents().find('iframe')[0];
-            if (typeof creative !== "undefined") {
-                rt_creatives.tag.push(creative.outerHTML);
+            rt_creatives.id.push(unit);
+            creative = $('#' + unit).find('iframe').contents().find('object');
+
+            if (!creative.length) creative = $('#' + unit).find('iframe').contents().find('img');
+            if (!creative.length) creative = $('#' + unit).find('iframe').contents().find('iframe');
+            if (creative.length) {
+
+                rt_creatives.tag.push(creative[0].outerHTML);
+                isVisible(unit);
+                var foundtag = true;
                 var found = false;
                 for (arr in googletag.slot_manager_instance.b[unit].d) {
                     for (number in pm_bids.bidid) {
                         if (googletag.slot_manager_instance.b[unit].d[arr][0] == pm_bids.bidid[number]) {
                             rt_creatives.pm_bid.push(pm_bids.bid[number]);
-                            found = true;
+                            foundbid = true;
                         }
 
                     }
                 }
-                if (!found) rt_creatives.pm_bid.push("This slot is not enabled.");
+                if (!foundbid) rt_creatives.pm_bid.push("This slot is not enabled.");
             }
+            if (!foundtag) rt_creatives.tag.push("Could not find a tag.");
 
         }
 
+    }
 
+    function isVisible(el) {
+        el = $('#' + el);
+        $(window).scroll(function() {
 
-        function isVisible(el) {
             upperBound = el.offset().top;
             lowerBound = upperBound + el.height();
             leftBound = el.offset().left;
@@ -74,23 +84,24 @@ realtime = (function($) {
             distanceFromTopOfViewPort = upperBound - vp_upperBound;
             scrolledPast = (lowerBound - vp_upperBound) / el.height();
             scrolledOnto = (vp_lowerBound - upperBound) / el.height();
+
+
             if (vp_upperBound > lowerBound || vp_lowerBound < upperBound) {
-                console.log('//element is not in view');
+                //console.log('//element is not in view');
             } else {
 
                 if (scrolledPast > 1 && scrolledOnto > 1) {
-                    //element is fully in view,
-                    console.log("100%");
+                    rt_creatives.id
                 } else {
-                    console.log(Math.min(scrolledPast, scrolledOnto));
+                    console.log(el.attr('id') + " unit is " + Math.min(scrolledPast, scrolledOnto) + "% visible.");
                 }
             }
+        });
 
-
-        }
-
-        //console.log(rt_creatives);
     }
+
+    //console.log(rt_creatives);
+
 
     var socket = io('http://' + document.getElementById('rtpix').src.split('/')[2], {
         'multiplex': false,

@@ -46,7 +46,8 @@ io.on('connect', function(socket) {
     ++numUsers;
     socket.uid = "u" + Math.round(Math.random() * (100000000 - 1) + 1);
     socket.broadcast.emit('userJoined', {
-        'total': numUsers
+        'total': numUsers,
+        'id': socket.uid
     });
 
     console.log(new Date().toString() + " a user joined, id #" + socket.uid);
@@ -56,7 +57,8 @@ io.on('connect', function(socket) {
         //console.log(data);
         io.emit('update info', data);
         // add the client's username to the global list
-        console.log('     on site ' + socket.sites);
+        console.log('     on site ' + data.hosts);
+        console.log('          with ad units ' + data.creatives.id)
     });
 
 
