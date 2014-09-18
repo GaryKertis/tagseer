@@ -66,9 +66,6 @@ io.on('connect', function(socket) {
     socket.on('update visibility', function(data) {
         data.id = socket.uid;
         io.emit('update backend visible', data);
-        for (creative in data.creatives) {
-            console.log(data.creatives[creative].id + ' is ' + data.creatives[creative].visible);
-        }
     });
 
     socket.on('disconnect', function() {

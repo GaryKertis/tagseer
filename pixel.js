@@ -25,64 +25,63 @@ realtime = (function($) {
         return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
     }
 
+    function findCreative(unit) {
+        rt_creatives[unit] = {
+            id: unit
+        };
+        creative = $('#' + unit).find('iframe').contents().find('object');
+
+        if (!creative.length) creative = $('#' + unit).find('iframe').contents().find('img');
+        if (!creative.length) creative = $('#' + unit).find('iframe').contents().find('iframe');
+        if (creative.length) {
+            rt_creatives[unit].tag = creative[0].outerHTML;
+
+            isVisible(unit);
+        }
+    }
+
     var adid = getParameterByName('adid');
-    if (typeof adid !== 'undefined') console.log(adid);
 
-    if (typeof googletag !== 'undefined') {
+    if (adid == "") {
+        if (typeof googletag !== 'undefined') {
 
-        if (typeof progKeyValueMap !== 'undefined') {
-            for (slot in progKeyValueMap) {
+            if (typeof progKeyValueMap !== 'undefined') {
+                for (slot in progKeyValueMap) {
 
-                progKeyValueMap[slot].indexOf(';') > 0 ? this_slot = progKeyValueMap[slot].split(";") : this_slot = progKeyValueMap[slot].split("=");
-                if (this_slot[0] == "bidstatus") {
-                    pm_bids.bidid.push(this_slot[5]);
-                    pm_bids.bid.push(this_slot[3]);
-                } else {
-                    pm_bids.bidid.push(this_slot[3]);
-                    pm_bids.bid.push(this_slot[1]);
+                    progKeyValueMap[slot].indexOf(';') > 0 ? this_slot = progKeyValueMap[slot].split(";") : this_slot = progKeyValueMap[slot].split("=");
+                    if (this_slot[0] == "bidstatus") {
+                        pm_bids.bidid.push(this_slot[5]);
+                        pm_bids.bid.push(this_slot[3]);
+                    } else {
+                        pm_bids.bidid.push(this_slot[3]);
+                        pm_bids.bid.push(this_slot[1]);
+                    }
                 }
             }
-        }
 
-        for (unit in googletag.slot_manager_instance.b) {
-            rt_creatives[unit] = {
-                id: unit
-            };
-            var foundtag = false;
-            creative = $('#' + unit).find('iframe').contents().find('object');
+            for (unit in googletag.slot_manager_instance.b) {
+                findCreative(unit);
 
-            if (!creative.length) creative = $('#' + unit).find('iframe').contents().find('img');
-            if (!creative.length) creative = $('#' + unit).find('iframe').contents().find('iframe');
-            if (creative.length) {
-                var foundtag = true;
-                rt_creatives[unit].tag = creative[0].outerHTML;
-                isVisible(unit);
-                var foundbid = false;
+
                 for (arr in googletag.slot_manager_instance.b[unit].d) {
                     for (number in pm_bids.bidid) {
                         if (googletag.slot_manager_instance.b[unit].d[arr][0] == pm_bids.bidid[number]) {
                             rt_creatives[unit].pm_bid = pm_bids.bid[number];
-                            foundbid = true;
                         }
 
                     }
                 }
-                if (!foundbid) rt_creatives[unit].pm_bid = "This slot is not enabled.";
-            }
-            if (!foundtag) {
-                rt_creatives[unit].tag = "Could not find a tag.";
-                rt_creatives[unit].pm_bid = "This slot is not enabled."
             }
 
         }
 
+    } else {
+        findCreative(adid);
     }
 
     function isVisible(unit) {
 
-        rt_creatives[unit].visible = 0;
-        $(window).scroll(function() {
-
+        function calculateVis(unit) {
             upperBound = $('#' + unit).offset().top;
             lowerBound = upperBound + $('#' + unit).height();
 
@@ -106,7 +105,7 @@ realtime = (function($) {
 
                 } else {
                     rt_creatives[unit].visible = Math.round(Math.min(scrolledPast, scrolledOnto) * 100) / 100;
-                    console.log(rt_creatives[unit].id + ' visibility is ' + rt_creatives[unit].visible);
+                    //console.log(rt_creatives[unit].id + ' visibility is ' + rt_creatives[unit].visible);
 
                     socket.emit('update visibility', {
                         'creatives': rt_creatives,
@@ -114,6 +113,15 @@ realtime = (function($) {
 
                 }
             }
+        }
+
+        rt_creatives[unit].visible = 0;
+        calculateVis(unit);
+
+        $(window).scroll(function() {
+
+            calculateVis(unit);
+
         });
 
     }
@@ -127,6 +135,9 @@ realtime = (function($) {
         'hosts': document.location.hostname,
         'creatives': rt_creatives,
         'referrers': document.referrer
+    });
+    socket.emit('update visibility', {
+        'creatives': rt_creatives,
     });
 });
 
