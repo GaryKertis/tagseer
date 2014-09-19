@@ -3,72 +3,124 @@
 
 <head>
 
-<style>
-.user { 
-    border: 1px solid black;
-    float: left;
-    margin: 5px;
-    padding: 5px;
-    word-wrap: break-word;
-}
-</style>
+    <style>
+    .user {
+        border: 1px solid black;
+        float: left;
+        margin: 5px;
+        padding: 5px;
+        word-wrap: break-word;
+        display: none;
+    }
+    </style>
 
-<link rel="stylesheet" src="/node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css">
 
 </head>
 
 <body>
 
-    There are <span id="TotalUsers"></span> total users.<br>
+    There are
+    <span id="TotalUsers"></span>
+    total users.
+    <br>
 
 
     <div id="users"></div>
+    <div id="charts" class="container"></div>
 
 
     <script src="socket.io/socket.io.js"></script>
     <script src="/node_modules/raphael/raphael-min.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
-    $(function() {	
-    var socket = io();
+    $(function() {
+        var socket = io();
+        var papers = new Object;
+        var viewers = new Object;
+        socket.on('update info', function(info) {
+            counter = 0;
+            rownums = 4;
+            $('#users').append('<div id=' + info.id + ' class="user"></div>');
+            $('#' + info.id).append($('<div>').text(info.hosts));
+            $('#' + info.id).append($('<div>').text(info.referrers));
 
-    socket.on('update info', function(info){
-        $('#users').append('<div id='+info.id+' class="user"></div>');
-        $('#'+info.id).append($('<div>').text(info.hosts));
-        $('#'+info.id).append($('<div>').text(info.referrers));
 
-    for (var n in info.creatives) {
+            total = Object.keys(info.creatives).length;
 
-        creative = info.creatives[n];
+            for (var n in info.creatives) {
+                creative = info.creatives[n];
+                if (!$('#' + creative.id).length) {
+                    console.log(creative.id);
+                    if (counter % rownums == 0) $('#charts').append("<div class='row'>");
 
-        $('#'+info.id).append(creative.id+'<div id='+creative.id+' class="visible"></div>');
-        $('#'+info.id).append($('<li>').html("Bid: " + creative.pm_bid));
-        $('#'+info.id).append($('<li>').html(creative.tag)); 
-    }
-      });
+                    $('.row').last().append('<div id="' + creative.id + '" class="chart col-xs-' + 12 / rownums + '">');
+                    if (typeof creative.tag !== "undefined") {
+                    papers[creative.id] = Raphael($('#' + creative.id)[0], $('#' + creative.id).width(), $('#' + creative.id).width());
+                    centerX = $('#' + creative.id).width() / 2;
+                    centerY = $('#' + creative.id).width() / 2;
+                    radius = $('#' + creative.id).width() / 2;
+                    
+                        var circle = papers[creative.id].circle(centerX, centerY, radius);
+                        circle.attr("fill", "lightGreen");
+                        circle.attr("stroke", "white");
+                        var circle = papers[creative.id].circle(centerX, centerY, radius / 2);
+                        circle.attr("fill", "green");
+                        circle.attr("stroke", "white");
+                        viewers[creative.id] = papers[creative.id].circle(0, 0, radius / 10);
+                        viewers[creative.id].attr("fill", "red");
+                        viewers[creative.id].attr("stroke", "white");
+                        viewers[creative.id].show();
+                    } else { 
+                        $('#' + creative.id).text('No tag was found for ' + creative.id + '.')}
+                    counter++;
 
-    socket.on('update backend visible', function(info){
-    for (var n in info.creatives) {
-        creative = info.creatives[n];
+                    /*
+                $('#'+info.id).append(creative.id+'<div id='+creative.id+' class="visible"></div>');
+                $('#'+info.id).append($('<li>').html("Bid: " + creative.pm_bid));
+                $('#'+info.id).append($('<li>').html(creative.tag)); 
+                */
+                }
+            }
+            if (total % rownums != 0) $('.row').last().find('div').removeClass('col-xs-' + 12 / rownums).addClass('col-xs-' + 12 / (total % rownums));
+        });
+
+        socket.on('update backend visible', function(info) {
+            for (var n in info.creatives) {
+                creative = info.creatives[n];
+                centerX = $('#' + creative.id).width() / 2;
+                centerY = $('#' + creative.id).width() / 2;
+                if (typeof viewers[creative.id] !== "undefined") {
+                    if (typeof creative.visible === "number") {
+                        if (creative.visible > 0) viewers[creative.id].show();
+                        else viewers[creative.id].hide();
+                        viewers[creative.id].attr({
+                            cx: Math.round(creative.visible * centerX),
+                            cy: Math.round(creative.visible * centerY)
+                        });
+                    }
+                }
+
+                /*
         $('#'+info.id + ' #'+creative.id).text("Visible: " + creative.visible);
-    }
-      });
+        */
+            }
+        });
 
-    socket.on('userJoined', function (data) {
-        console.log('A user joined with id #' + data.id);
-        $('#TotalUsers').text(data.total - 1);
+        socket.on('userJoined', function(data) {
+            console.log('A user joined with id #' + data.id);
+            $('#TotalUsers').text(data.total - 1);
+        });
+
+        socket.on('user left', function(data) {
+            $('#TotalUsers').text(data.susers - 1);
+            $('#' + data.suid).remove();
+            console.log('A user disconnected with id #' + data.suid);
+        });
     });
-
-    socket.on('user left', function (data) {
-        $('#TotalUsers').text(data.susers - 1);
-       $('#' + data.suid).remove();
-        console.log('A user disconnected with id #' + data.suid);
-    });
-});
-
     </script>
 
-  
+
 </body>
 
 </html>

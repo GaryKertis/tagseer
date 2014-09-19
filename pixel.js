@@ -104,8 +104,8 @@ realtime = (function($) {
         //--calculate percentage difference between lowerBound & vp_upperBound (divide by unit height)
         //both top of unit is below top of window and bottom of unit is above bottom of window
         //--100% in view.
-        /*
-        console.log('Unit name is: ' + unit);
+
+        /*console.log('Unit name is: ' + unit);
         console.log("upperBound is " + upperBound);
         console.log("lowerBound is " + lowerBound);
         console.log("vp_upperBound is " + vp_upperBound);
@@ -115,10 +115,10 @@ realtime = (function($) {
         if (upperBound > vp_lowerBound && lowerBound > vp_lowerBound || lowerBound < vp_upperBound && upperBound < vp_upperBound) {
             //0
             inview = 0;
-        } else if (upperBound < vp_lowerBound && lowerBound > vp_lowerBound) {
+        } else if (upperBound <= vp_lowerBound && lowerBound >= vp_lowerBound) {
             //--calculate percentage difference between upperBound & vp_lowerBound (divide by unit height)
             inview = (vp_lowerBound - upperBound) / $('#' + unit).height();
-        } else if (lowerBound > vp_upperBound && upperBound < vp_upperBound) {
+        } else if (lowerBound >= vp_upperBound && upperBound <= vp_upperBound) {
             //--calculate percentage difference between lowerBound & vp_upperBound (divide by unit height)
             inview = (lowerBound - vp_upperBound) / $('#' + unit).height();
         } else if (upperBound > vp_upperBound && lowerBound < vp_lowerBound) {
