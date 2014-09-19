@@ -34,6 +34,7 @@ realtime = (function($) {
         if (!creative.length) creative = $('#' + unit).find('iframe').contents().find('img');
         if (!creative.length) creative = $('#' + unit).find('iframe').contents().find('iframe');
         if (creative.length) {
+            isVisible(unit);
             rt_creatives[unit].tag = creative[0].outerHTML;
             rt_creatives[unit].timer = setInterval(function() {
                 isVisible(unit)

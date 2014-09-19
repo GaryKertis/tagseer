@@ -13,6 +13,8 @@
 }
 </style>
 
+<link rel="stylesheet" src="/node_modules/bootstrap/dist/css/bootstrap.min.css">
+
 </head>
 
 <body>
@@ -24,6 +26,7 @@
 
 
     <script src="socket.io/socket.io.js"></script>
+    <script src="/node_modules/raphael/raphael-min.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
     $(function() {	
@@ -33,16 +36,21 @@
         $('#users').append('<div id='+info.id+' class="user"></div>');
         $('#'+info.id).append($('<div>').text(info.hosts));
         $('#'+info.id).append($('<div>').text(info.referrers));
-    for (number in info.creatives) {
-        $('#'+info.id).append(info.creatives[number].id+'<div id='+info.creatives[number].id+' class="visible"></div>');
-        $('#'+info.id).append($('<li>').html("Bid: " + info.creatives[number].pm_bid));
-        $('#'+info.id).append($('<li>').html(info.creatives[number].tag)); 
+
+    for (var n in info.creatives) {
+
+        creative = info.creatives[n];
+
+        $('#'+info.id).append(creative.id+'<div id='+creative.id+' class="visible"></div>');
+        $('#'+info.id).append($('<li>').html("Bid: " + creative.pm_bid));
+        $('#'+info.id).append($('<li>').html(creative.tag)); 
     }
       });
 
     socket.on('update backend visible', function(info){
-    for (number in info.creatives) {
-        $('#'+info.id + ' #'+info.creatives[number].id).text("Visible: " + info.creatives[number].visible);
+    for (var n in info.creatives) {
+        creative = info.creatives[n];
+        $('#'+info.id + ' #'+creative.id).text("Visible: " + creative.visible);
     }
       });
 

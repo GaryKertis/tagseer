@@ -1,12 +1,14 @@
 {
-  "name": "realtime-analytics",
-  "version": "0.0.1",
-  "description": "my first socket.io app",
-  "dependencies": {
-    "express": "^4.8.7",
-    "socket.io": "^1.0.6"
-  },
-  "scripts": {
-    "start": "node index.js"
-  }
+    "name": "realtime-analytics",
+    "version": "0.0.1",
+    "description": "my first socket.io app",
+    "dependencies": {
+        "express": "^4.8.7",
+        "socket.io": "^1.0.6",
+        "raphael": "2.1.0",
+        "bootstrap": "3.2.0"
+    },
+    "scripts": {
+        "start": "node index.js"
+    }
 }
