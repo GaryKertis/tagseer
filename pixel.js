@@ -1,7 +1,7 @@
 // Only do anything if jQuery isn't defined
 
 realtime = (function($) {
-    console.log("Starting realtime script");
+    //console.log("Starting realtime script");
 
     var socket = io('http://' + document.getElementById('rtpix').src.split('/')[2], {
         'multiplex': false,
@@ -124,7 +124,7 @@ realtime = (function($) {
             //100%
             inview = 1;
         } else {
-            console.log('should never get here');
+            //console.log('should never get here');
         }
 
         rt_creatives[unit].visible = Math.round(inview * 100) / 100;
@@ -136,7 +136,7 @@ realtime = (function($) {
 
     }
 
-    console.log(rt_creatives);
+    //console.log(rt_creatives);
     socket.emit('sendUserInfo', {
         'hosts': document.location.hostname,
         'creatives': rt_creatives,
