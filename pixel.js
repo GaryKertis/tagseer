@@ -35,8 +35,9 @@ realtime = (function($) {
         if (!creative.length) creative = $('#' + unit).find('iframe').contents().find('iframe');
         if (creative.length) {
             rt_creatives[unit].tag = creative[0].outerHTML;
-
-            isVisible(unit);
+            rt_creatives[unit].timer = setInterval(function() {
+                isVisible(unit)
+            }, 100);
         }
     }
 
@@ -76,59 +77,64 @@ realtime = (function($) {
         }
 
     } else {
-        findCreative(adid);
+        ads = adid.split(',')
+        for (var i = 0; i < ads.length; i++) {
+            findCreative(ads[i]);
+        }
     }
 
     function isVisible(unit) {
+        upperBound = $('#' + unit).offset().top;
+        lowerBound = upperBound + $('#' + unit).height();
 
-        function calculateVis(unit) {
-            upperBound = $('#' + unit).offset().top;
-            lowerBound = upperBound + $('#' + unit).height();
+        leftBound = $('#' + unit).offset().left;
+        rightBound = leftBound + $('#' + unit).width();
+        vp_upperBound = $(window).scrollTop();
+        vp_lowerBound = vp_upperBound + $(window).height();
+        vp_leftBound = $(window).scrollLeft();
 
-            leftBound = $('#' + unit).offset().left;
-            rightBound = leftBound + $('#' + unit).width();
-            vp_upperBound = $(window).scrollTop();
-            vp_lowerBound = vp_upperBound + $(window).height();
-            vp_leftBound = $(window).scrollLeft();
-            distanceFromTopOfViewPort = upperBound - vp_upperBound;
-            scrolledPast = (lowerBound - vp_upperBound) / $('#' + unit).height();
-            scrolledOnto = (vp_lowerBound - upperBound) / $('#' + unit).height();
+        //top of unit is below bottom of window
+        //--not in view
+        //bottom of unit is above top of window
+        //--not in view
+        //top of unit is above bottom of window and bottom of unit is below bottom of window
+        //--calculate percentage difference between upperBound & vp_lowerBound (divide by unit height)
+        //bottom of unit is below top of window and top of unit is above top of winow
+        //--calculate percentage difference between lowerBound & vp_upperBound (divide by unit height)
+        //both top of unit is below top of window and bottom of unit is above bottom of window
+        //--100% in view.
+        /*
+        console.log('Unit name is: ' + unit);
+        console.log("upperBound is " + upperBound);
+        console.log("lowerBound is " + lowerBound);
+        console.log("vp_upperBound is " + vp_upperBound);
+        console.log("vp_lowerBound is " + vp_lowerBound);
+        console.log("Unit height is " + $('#' + unit).height());*/
 
-            if (vp_upperBound > lowerBound || vp_lowerBound < upperBound) {
-                //console.log('//element is not in view');
-
-            } else {
-
-                if (scrolledPast > 1 && scrolledOnto > 1) {
-                    rt_creatives[unit].visible = 1;
-
-
-                } else {
-                    rt_creatives[unit].visible = Math.round(Math.min(scrolledPast, scrolledOnto) * 100) / 100;
-                    //console.log(rt_creatives[unit].id + ' visibility is ' + rt_creatives[unit].visible);
-
-                    socket.emit('update visibility', {
-                        'creatives': rt_creatives,
-                    });
-
-                }
-            }
+        if (upperBound > vp_lowerBound && lowerBound > vp_lowerBound || lowerBound < vp_upperBound && upperBound < vp_upperBound) {
+            //0
+            inview = 0;
+        } else if (upperBound < vp_lowerBound && lowerBound > vp_lowerBound) {
+            //--calculate percentage difference between upperBound & vp_lowerBound (divide by unit height)
+            inview = (vp_lowerBound - upperBound) / $('#' + unit).height();
+        } else if (lowerBound > vp_upperBound && upperBound < vp_upperBound) {
+            //--calculate percentage difference between lowerBound & vp_upperBound (divide by unit height)
+            inview = (lowerBound - vp_upperBound) / $('#' + unit).height();
+        } else if (upperBound > vp_upperBound && lowerBound < vp_lowerBound) {
+            //100%
+            inview = 1;
+        } else {
+            console.log('should never get here');
         }
 
-        rt_creatives[unit].visible = 0;
-        calculateVis(unit);
+        rt_creatives[unit].visible = Math.round(inview * 100) / 100;
+        //console.log(rt_creatives[unit].id + ' visibility is ' + rt_creatives[unit].visible);
 
-        $(window).scroll(function() {
-
-            calculateVis(unit);
-
+        socket.emit('update visibility', {
+            'creatives': rt_creatives,
         });
 
     }
-
-    //console.log(rt_creatives);
-
-
 
     console.log(rt_creatives);
     socket.emit('sendUserInfo', {
