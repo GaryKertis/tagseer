@@ -25,6 +25,7 @@
     total users.
     <br>
 
+    <span id="countrylist"></span>
 
     <div id="users"></div>
     <div id="charts" class="container"></div>
@@ -109,6 +110,9 @@
         socket.on('userJoined', function(data) {
             console.log('A user joined with id #' + data.id);
             $('#TotalUsers').text(data.total - 1);
+            console.log(data.latitude);
+            console.log(data.longitude);
+
         });
 
         socket.on('user left', function(data) {

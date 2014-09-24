@@ -1,5 +1,6 @@
 var express = require('express')
 var app = express();
+var external = require('http');
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var numUsers = 0;
@@ -43,12 +44,42 @@ app.get('/backend', function(req, res) {
 })
 
 io.on('connect', function(socket) {
+
     ++numUsers;
     socket.uid = "u" + Math.round(Math.random() * (100000000 - 1) + 1);
-    socket.broadcast.emit('userJoined', {
-        'total': numUsers,
-        'id': socket.uid
+
+    var options = {
+        host: 'freegeoip.net',
+        port: 80,
+        path: '/json/' + socket.handshake.address
+    };
+
+    external.get(options, function(res) {
+        var str = "";
+        console.log("Got response: " + res.statusCode);
+
+        res.on('data', function(chunk) {
+            str += chunk;
+        });
+
+        res.on('end', function() {
+            ipdata = JSON.parse(str);
+            // your code here if you want to use the results !
+
+            socket.broadcast.emit('userJoined', {
+                'total': numUsers,
+                'id': socket.uid,
+                'latitude': ipdata.latitude,
+                'longitude': ipdata.longitude
+            });
+        });
+
+
+    }).on('error', function(e) {
+        console.log("Got error: " + e.message);
     });
+
+
 
     console.log(new Date().toString() + " a user joined, id #" + socket.uid);
 
