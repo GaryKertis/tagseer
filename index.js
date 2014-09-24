@@ -44,12 +44,11 @@ io.on('connect', function(socket) {
     ++numUsers;
     socket.uid = "u" + Math.round(Math.random() * (100000000 - 1) + 1);
     request = socket.request;
-    ip = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address;
-    console.log(ip);
+    console.log(request.connection.remoteAddress);
     var options = {
         host: 'freegeoip.net',
         port: 80,
-        path: '/json/' + ip
+        path: '/json/' + request.connection.remoteAddress
     };
 
     external.get(options, function(res) {
