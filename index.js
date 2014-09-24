@@ -27,13 +27,15 @@ app.use(express.static(__dirname));
 
 app.enable('trust proxy');
 
+app.route('/node_modules')
+.all(function(req, res, next) {
+  // runs for all HTTP verbs first
+  // think of it as route specific middleware!
+});
+
 var options = {
     root: __dirname
 }
-
-app.get('/', function(req, res) {
-    res.sendFile('/index.html', options);
-});
 
 app.get('/pixel', function(req, res) {
     res.sendFile('/pixel.js', options);
@@ -47,16 +49,16 @@ io.on('connect', function(socket) {
 
     ++numUsers;
     socket.uid = "u" + Math.round(Math.random() * (100000000 - 1) + 1);
-
+    request = socket.request;
+    console.log(request.connection.remoteAddress);
     var options = {
         host: 'freegeoip.net',
         port: 80,
-        path: '/json/' + socket.handshake.address
+        path: '/json/' + request.connection.remoteAddress
     };
 
     external.get(options, function(res) {
         var str = "";
-        console.log("Got response: " + res.statusCode);
 
         res.on('data', function(chunk) {
             str += chunk;
