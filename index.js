@@ -44,36 +44,41 @@ io.on('connect', function(socket) {
     ++numUsers;
     socket.uid = "u" + Math.round(Math.random() * (100000000 - 1) + 1);
     request = socket.request;
-    console.log(request.connection.remoteAddress);
-    var options = {
-        host: 'freegeoip.net',
-        port: 80,
-        path: '/json/' + request.connection.remoteAddress
-    };
+    ip = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address;
 
-    external.get(options, function(res) {
-        var str = "";
+    if (typeof ip !== "undefined") {
 
-        res.on('data', function(chunk) {
-            str += chunk;
-        });
+        console.log(ip);
+        var options = {
+            host: 'freegeoip.net',
+            port: 80,
+            path: '/json/' + ip
+        };
 
-        res.on('end', function() {
-            ipdata = JSON.parse(str);
-            // your code here if you want to use the results !
+        external.get(options, function(res) {
+            var str = "";
 
-            socket.broadcast.emit('userJoined', {
-                'total': numUsers,
-                'id': socket.uid,
-                'latitude': ipdata.latitude,
-                'longitude': ipdata.longitude
+            res.on('data', function(chunk) {
+                str += chunk;
             });
+
+            res.on('end', function() {
+                ipdata = JSON.parse(str);
+                // your code here if you want to use the results !
+
+                socket.broadcast.emit('userJoined', {
+                    'total': numUsers,
+                    'id': socket.uid,
+                    'latitude': ipdata.latitude,
+                    'longitude': ipdata.longitude
+                });
+            });
+
+
+        }).on('error', function(e) {
+            console.log("Got error: " + e.message);
         });
-
-
-    }).on('error', function(e) {
-        console.log("Got error: " + e.message);
-    });
+    }
 
 
 
