@@ -27,12 +27,6 @@ app.use(express.static(__dirname));
 
 app.enable('trust proxy');
 
-app.route('/node_modules')
-.all(function(req, res, next) {
-  // runs for all HTTP verbs first
-  // think of it as route specific middleware!
-});
-
 var options = {
     root: __dirname
 }
@@ -50,11 +44,12 @@ io.on('connect', function(socket) {
     ++numUsers;
     socket.uid = "u" + Math.round(Math.random() * (100000000 - 1) + 1);
     request = socket.request;
-    console.log(request.connection.remoteAddress);
+    ip = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address;
+    console.log(ip);
     var options = {
         host: 'freegeoip.net',
         port: 80,
-        path: '/json/' + request.connection.remoteAddress
+        path: '/json/' + ip
     };
 
     external.get(options, function(res) {
