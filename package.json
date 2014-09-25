@@ -6,7 +6,6 @@
     "dependencies": {
         "express": "^4.8.7",
         "socket.io": "^1.0.6",
-        "raphael": "^2.1.0",
         "bootstrap": "^3.2.0"
     },
     "scripts": {
