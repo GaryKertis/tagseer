@@ -45,7 +45,7 @@ io.on('connect', function(socket) {
     socket.uid = "u" + Math.round(Math.random() * (100000000 - 1) + 1);
     request = socket.request;
     ip = socket.handshake.address;
-	console.log(socket.handshake.headers['x-forwarded-for']);
+    console.log('origin ip is " + socket.handshake.headers['x-forwarded-for']);
     if (typeof ip !== "undefined") {
 
         console.log(ip);
