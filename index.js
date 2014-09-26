@@ -44,11 +44,10 @@ io.on('connect', function(socket) {
     ++numUsers;
     socket.uid = "u" + Math.round(Math.random() * (100000000 - 1) + 1);
     request = socket.request;
-    ip = socket.handshake.address;
-    console.log("origin ip is " + socket.handshake.headers['x-forwarded-for']);
+    ip = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address;
+
     if (typeof ip !== "undefined") {
 
-        console.log(ip);
         var options = {
             host: 'freegeoip.net',
             port: 80,
