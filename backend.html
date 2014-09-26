@@ -12,6 +12,9 @@
         word-wrap: break-word;
         display: none;
     }
+    #map-canvas {
+        height: 600px;
+    }
     </style>
 
     <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
@@ -28,17 +31,34 @@
     <span id="countrylist"></span>
 
     <div id="users"></div>
-    <div id="charts" class="container"></div>
+    <div id="charts" class="container">
+        <div id="map-canvas" class="row"></div>
+    </div>
+
+
 
 
     <script src="socket.io/socket.io.js"></script>
     <script src="./node_modules/raphael/raphael-min.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBH5tjVmw-7mstFrGW6-hAE8U0MqEJMdTw">
+    </script>
     <script>
+    var mapOptions = {
+        center: new google.maps.LatLng(0, 0),
+        zoom: 2,
+        mapTypeId: google.maps.MapTypeId.TERRAIN
+    };
+
+    var map = new google.maps.Map(document.getElementById('map-canvas'),
+        mapOptions);
+
     $(function() {
         var socket = io();
         var papers = new Object;
         var viewers = new Object;
+        var circles = new Object;
+
         socket.on('update info', function(info) {
             counter = 0;
             rownums = 4;
@@ -78,7 +98,7 @@
                 */
                 }
                 if (typeof papers[creative.id] !== "undefined") {
-                    viewers[info.id + creative.id] = papers[creative.id].circle(0, height - radius/10, radius / 10);
+                    viewers[info.id + creative.id] = papers[creative.id].circle(0, height - radius / 10, radius / 10);
                     viewers[info.id + creative.id].attr("fill", "red");
                     viewers[info.id + creative.id].attr("stroke", "white");
                     viewers[info.id + creative.id].show();
@@ -96,8 +116,17 @@
                         if (creative.visible > 0) viewers[info.id + creative.id].show();
                         else viewers[info.id + creative.id].hide();
                         viewers[info.id + creative.id].attr({
-                            cx: Math.round((creative.visible * width) - radius/10)
+                            cx: Math.round((creative.visible * width) - radius / 10)
                         });
+
+                       /* if (creative.visible > 0) {
+                            //console.log(circles[info.id]);
+                            //console.log(parseInt(1000000*creative.visible));
+                            circles[info.id].setMap(null);
+                            circles[info.id].radius = parseInt(1000000*creative.visible);
+                            circles[info.id].fillColor = "green";
+                            circles[info.id].setMap(map);
+                        }  */
                     }
                 }
 
@@ -108,20 +137,34 @@
         });
 
         socket.on('userJoined', function(data) {
-            console.log('A user joined with id #' + data.id);
-            $('#TotalUsers').text(data.total - 1);
-            console.log(data.latitude);
-            console.log(data.longitude);
+            console.log('A user joined with id #' + data.id + " at " + data.latitude + "," + data.longitude);
 
+            $('#TotalUsers').text(data.total - 1);
+
+
+        var populationOptions = {
+            strokeColor: '#FF0000',
+            strokeOpacity: 1,
+            strokeWeight: 1,
+            fillColor: '#FF0000',
+            fillOpacity: 1,
+            map: map,
+            center: new google.maps.LatLng(data.latitude, data.longitude),
+            radius: parseInt(100000)
+        };
+        // Add the circle for this city to the map.
+        circles[data.id] = new google.maps.Circle(populationOptions);
         });
 
         socket.on('user left', function(data) {
             $('#TotalUsers').text(data.susers - 1);
             $('#' + data.suid).remove();
+            if (typeof circles[data.suid] !== "undefined") circles[data.suid].setMap(null);
             console.log('A user disconnected with id #' + data.suid);
         });
     });
     </script>
+
 
 
 </body>
