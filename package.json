@@ -6,9 +6,11 @@
     "dependencies": {
         "express": "^4.8.7",
         "socket.io": "^1.0.6",
-        "bootstrap": "^3.2.0"
+        "bootstrap": "^3.2.0",
+	"forever": "^0.11.1",
+	"raphael": "^2.1.0"
     },
     "scripts": {
-        "start": "node index.js"
+        "start": "node_modules/forever/bin/forever index.js"
     }
 }
