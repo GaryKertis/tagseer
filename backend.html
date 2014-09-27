@@ -47,7 +47,6 @@
     var mapOptions = {
         center: new google.maps.LatLng(0, 0),
         zoom: 2,
-        mapTypeId: google.maps.MapTypeId.TERRAIN
     };
 
     var map = new google.maps.Map(document.getElementById('map-canvas'),
@@ -119,14 +118,12 @@
                             cx: Math.round((creative.visible * width) - radius / 10)
                         });
 
-                       /* if (creative.visible > 0) {
-                            //console.log(circles[info.id]);
-                            //console.log(parseInt(1000000*creative.visible));
-                            circles[info.id].setMap(null);
-                            circles[info.id].radius = parseInt(1000000*creative.visible);
-                            circles[info.id].fillColor = "green";
-                            circles[info.id].setMap(map);
-                        }  */
+                        if (creative.visible > 0 && typeof circles[info.id] !== "undefined") {
+                            console.log(creative.visible);
+                            var icon = circles[info.id].get('icon')
+                            icon.fillOpacity = creative.visible;
+                            circles[info.id].set('icon', icon);
+                        }  
                     }
                 }
 
@@ -143,24 +140,58 @@
 
 
         var populationOptions = {
-            strokeColor: '#FF0000',
-            strokeOpacity: 1,
-            strokeWeight: 1,
-            fillColor: '#FF0000',
-            fillOpacity: 1,
+             icon: {
+                path: google.maps.SymbolPath.CIRCLE,
+                fillOpacity: 0.5,
+                fillColor: '#ff0000',
+                strokeOpacity: 1.0,
+                strokeColor: '#fff000',
+                strokeWeight: 30, 
+                scale: 5 //pixels
+            },
             map: map,
-            center: new google.maps.LatLng(data.latitude, data.longitude),
-            radius: parseInt(100000)
+            position: new google.maps.LatLng(data.latitude, data.longitude),
         };
         // Add the circle for this city to the map.
-        circles[data.id] = new google.maps.Circle(populationOptions);
+        circles[data.id] = new google.maps.Marker(populationOptions);
+        
+        initialAnimation(circles[data.id]);
+
+        function initialAnimation(marker) {
+            var count = 30;
+        timer = window.setInterval(function(){
+            count--;
+            var icon = marker.get('icon');
+            icon.strokeWeight = count;
+            marker.set('icon', icon);
+            if (count <= 1) clearInterval(timer);
+            console.log(count);
+        }, 15);
+
+         }
+
         });
 
         socket.on('user left', function(data) {
             $('#TotalUsers').text(data.susers - 1);
             $('#' + data.suid).remove();
-            if (typeof circles[data.suid] !== "undefined") circles[data.suid].setMap(null);
+            if (typeof circles[data.suid] !== "undefined") finalAnimation(circles[data.suid]);
             console.log('A user disconnected with id #' + data.suid);
+
+            function finalAnimation(marker) {
+            var icon = marker.get('icon');
+            var count = icon.scale;
+            timer = window.setInterval(function(){
+            count--;
+            icon.scale = count;
+            marker.set('icon', icon);
+            if (count <= 0) {
+                clearInterval(timer); 
+                marker.setMap(null);
+            }
+        }, 20);
+            }
+
         });
     });
     </script>
