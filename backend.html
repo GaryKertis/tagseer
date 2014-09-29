@@ -196,10 +196,11 @@
 
             function finalAnimation(marker) {
                 var icon = marker.get('icon');
-                var count = icon.scale;
+                var count = 30;
                 var timer = window.setInterval(function() {
                     count--;
-                    icon.scale = count;
+                    icon.strokeWeight = count;
+                    icon.strokeColor = "#000000";
                     marker.set('icon', icon);
                     if (count <= 0) {
                         clearInterval(timer);
