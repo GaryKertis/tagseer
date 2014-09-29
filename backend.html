@@ -57,7 +57,7 @@
         var papers = new Object;
         var viewers = new Object;
         var circles = new Object;
-
+	
         socket.on('update info', function(info) {
             counter = 0;
             rownums = 4;
@@ -155,17 +155,17 @@
         // Add the circle for this city to the map.
         circles[data.id] = new google.maps.Marker(populationOptions);
         
-        initialAnimation(circles[data.id]);
+        if (typeof circles[data.id] !== "undefined") initialAnimation(circles[data.id]);
 
         function initialAnimation(marker) {
             var count = 30;
-        timer = window.setInterval(function(){
+        var timer = window.setInterval(function(){
             count--;
             var icon = marker.get('icon');
             icon.strokeWeight = count;
             marker.set('icon', icon);
-            if (count <= 1) clearInterval(timer);
-            console.log(count);
+            if (count < 1) {clearInterval(timer);console.log('clear timer');}
+            console.log(count--);
         }, 15);
 
          }
@@ -181,7 +181,7 @@
             function finalAnimation(marker) {
             var icon = marker.get('icon');
             var count = icon.scale;
-            timer = window.setInterval(function(){
+            var timer = window.setInterval(function(){
             count--;
             icon.scale = count;
             marker.set('icon', icon);
