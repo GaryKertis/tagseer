@@ -49,9 +49,9 @@ io.on('connect', function(socket) {
     if (typeof ip !== "undefined") {
 
         var options = {
-            host: 'freegeoip.net',
+            host: 'www.telize.com',
             port: 80,
-            path: '/json/' + ip
+            path: '/geoip/' + ip
         };
 
         external.get(options, function(res) {
@@ -62,14 +62,15 @@ io.on('connect', function(socket) {
             });
 
             res.on('end', function() {
+                //console.log(str);
                 ipdata = JSON.parse(str);
                 // your code here if you want to use the results !
 
                 socket.broadcast.emit('userJoined', {
                     'total': numUsers,
                     'id': socket.uid,
-                    'latitude': ipdata.latitude,
-                    'longitude': ipdata.longitude
+                    'latitude': ipdata.latitude || 0,
+                    'longitude': ipdata.longitude || 0
                 });
             });
 
@@ -81,16 +82,16 @@ io.on('connect', function(socket) {
 
 
 
-    //console.log(new Date().toString() + " a user joined, id #" + socket.uid);
+   // console.log(new Date().toString() + " a user joined, id #" + socket.uid);
 
     socket.on('sendUserInfo', function(data) {
         data.id = socket.uid;
         //console.log(data);
         io.emit('update info', data);
         // add the client's username to the global list
-        //console.log('     on site ' + data.hosts);
+        console.log('     on site ' + data.hosts);
         for (creative in data.creatives) {
-         //   console.log('          with data ' + creative);
+           // console.log('          with data ' + creative);
         }
     });
 
@@ -106,7 +107,7 @@ io.on('connect', function(socket) {
             susers: numUsers,
             suid: socket.uid
         });
-        //console.log(new Date().toString() + " the user disconnected, id #" + socket.uid);
+      //  console.log(new Date().toString() + " the user disconnected, id #" + socket.uid);
     });
 
 });
