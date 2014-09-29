@@ -81,60 +81,28 @@
 
             total = Object.keys(info.creatives).length;
 
-            for (var n in info.creatives) {
-                creative = info.creatives[n];
-                if (!$('#' + creative.id).length) {
-                    console.log(creative.id);
-                    if (counter % rownums == 0) $('#charts').append("<div class='row'>");
-
-                    $('.row').last().append('<div id="' + creative.id + '" class="chart col-xs-' + 12 / rownums + '">');
-                    if (typeof creative.tag !== "undefined") {
-                        papers[creative.id] = Raphael($('#' + creative.id)[0], $('#' + creative.id).width(), $('#' + creative.id).width());
-                        width = $('#' + creative.id).width();
-                        height = $('#' + creative.id).width();
-                        radius = $('#' + creative.id).width() / 2;
-
-                        var rectangle = papers[creative.id].rect(0, 0, width, height);
-                        rectangle.attr("fill", "lightGreen");
-                        rectangle.attr("stroke", "white");
-
-                    } else {
-                        $('#' + creative.id).text('No tag was found for ' + creative.id + '.')
-                    }
-                    counter++;
-
-                    /*
-                $('#'+info.id).append(creative.id+'<div id='+creative.id+' class="visible"></div>');
-                $('#'+info.id).append($('<li>').html("Bid: " + creative.pm_bid));
-                $('#'+info.id).append($('<li>').html(creative.tag)); 
-                */
-                }
-                if (typeof papers[creative.id] !== "undefined") {
-                    viewers[info.id + creative.id] = papers[creative.id].circle(0, height - radius / 10, radius / 10);
-                    viewers[info.id + creative.id].attr("fill", "red");
-                    viewers[info.id + creative.id].attr("stroke", "white");
-                    viewers[info.id + creative.id].show();
-                }
-            }
-            if (total % rownums != 0) $('.row').last().find('div').removeClass('col-xs-' + 12 / rownums).addClass('col-xs-' + 12 / (total % rownums));
         });
 
         socket.on('update backend visible', function(info) {
             for (var n in info.creatives) {
                 creative = info.creatives[n];
-                width = $('#' + creative.id).width();
-                if (typeof viewers[info.id + creative.id] !== "undefined") {
+                if (typeof circles[info.id] !== "undefined") {
                     if (typeof creative.visible === "number") {
-                        if (creative.visible > 0) viewers[info.id + creative.id].show();
-                        else viewers[info.id + creative.id].hide();
-                        viewers[info.id + creative.id].attr({
-                            cx: Math.round((creative.visible * width) - radius / 10)
-                        });
 
-                        if (creative.visible > 0 && typeof circles[info.id] !== "undefined") {
+                        if (creative.visible > 0) {
                             //console.log(creative.visible);
                             var icon = circles[info.id].get('icon')
+                            icon.fillColor = "green";
+                            icon.strokeColor = "green"
                             icon.fillOpacity = creative.visible;
+                            circles[info.id].set('icon', icon);
+                        }
+
+                        if (creative.visible <= 0) {
+                            var icon = circles[info.id].get('icon')
+                            icon.strokeColor = "red";
+                            icon.fillColor = "red";
+                            icon.fillOpacity = .05;
                             circles[info.id].set('icon', icon);
                         }
                     }

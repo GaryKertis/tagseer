@@ -29,10 +29,13 @@ realtime = (function($) {
         rt_creatives[unit] = {
             id: unit
         };
-        creative = $('#' + unit).find('iframe').contents().find('object');
 
-        if (!creative.length) creative = $('#' + unit).find('iframe').contents().find('img');
-        if (!creative.length) creative = $('#' + unit).find('iframe').contents().find('iframe');
+        getParameterByName('inIframe') ? creative = $('#' + unit, window.parent.document) : creative = $('#' + unit);
+
+        //if (!creative.length) creative = $('#' + unit).find('iframe').contents().find('object');
+        //if (!creative.length) creative = $('#' + unit).find('iframe').contents().find('img');
+        //if (!creative.length) creative = $('#' + unit).find('iframe').contents().find('iframe');
+
         if (creative.length) {
             isVisible(unit);
             rt_creatives[unit].tag = creative[0].outerHTML;
