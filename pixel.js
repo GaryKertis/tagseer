@@ -17,7 +17,7 @@ realtime = (function($) {
 
 
     var scriptid = document.getElementById('rtpix').src;
-
+    console.log(scriptid + " is script id.");
     function getParameterByName(name) {
         name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
         var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
@@ -26,16 +26,17 @@ realtime = (function($) {
     }
 
     function findCreative(unit) {
+        console.log(unit + " is unit name.");
         rt_creatives[unit] = {
             id: unit
         };
 
-        getParameterByName('inIframe') ? creative = $('#' + unit, window.parent.document) : creative = $('#' + unit);
+        self!=top ? creative = $('#' + unit, window.parent.document) : creative = $('#' + unit);
 
         //if (!creative.length) creative = $('#' + unit).find('iframe').contents().find('object');
         //if (!creative.length) creative = $('#' + unit).find('iframe').contents().find('img');
         //if (!creative.length) creative = $('#' + unit).find('iframe').contents().find('iframe');
-
+        //console.log(creative);
         if (creative.length) {
             isVisible(unit);
             rt_creatives[unit].tag = creative[0].outerHTML;
@@ -46,7 +47,7 @@ realtime = (function($) {
     }
 
     var adid = getParameterByName('adid');
-
+    console.log(adid + " is ad id.");
     if (adid == "") {
         if (typeof googletag !== 'undefined') {
 
@@ -88,14 +89,19 @@ realtime = (function($) {
     }
 
     function isVisible(unit) {
-        upperBound = $('#' + unit).offset().top;
-        lowerBound = upperBound + $('#' + unit).height();
+        var context;
+        self!=top ? context = window.parent.document : context = window;
 
-        leftBound = $('#' + unit).offset().left;
-        rightBound = leftBound + $('#' + unit).width();
-        vp_upperBound = $(window).scrollTop();
-        vp_lowerBound = vp_upperBound + $(window).height();
-        vp_leftBound = $(window).scrollLeft();
+        var creative = $('#' + unit, context);
+        console.log(creative + ' is creative');
+        upperBound = creative.offset().top;
+        lowerBound = upperBound + creative.height();
+
+        leftBound = creative.offset().left;
+        rightBound = leftBound + creative.width();
+        vp_upperBound = $(context).scrollTop();
+        vp_lowerBound = vp_upperBound + $(context).height();
+        vp_leftBound = $(context).scrollLeft();
 
         //top of unit is below bottom of window
         //--not in view
@@ -120,10 +126,10 @@ realtime = (function($) {
             inview = 0;
         } else if (upperBound <= vp_lowerBound && lowerBound >= vp_lowerBound) {
             //--calculate percentage difference between upperBound & vp_lowerBound (divide by unit height)
-            inview = (vp_lowerBound - upperBound) / $('#' + unit).height();
+            inview = (vp_lowerBound - upperBound) / creative.height();
         } else if (lowerBound >= vp_upperBound && upperBound <= vp_upperBound) {
             //--calculate percentage difference between lowerBound & vp_upperBound (divide by unit height)
-            inview = (lowerBound - vp_upperBound) / $('#' + unit).height();
+            inview = (lowerBound - vp_upperBound) / creative.height();
         } else if (upperBound > vp_upperBound && lowerBound < vp_lowerBound) {
             //100%
             inview = 1;
@@ -132,7 +138,7 @@ realtime = (function($) {
         }
 
         rt_creatives[unit].visible = Math.round(inview * 100) / 100;
-        //console.log(rt_creatives[unit].id + ' visibility is ' + rt_creatives[unit].visible);
+        console.log(rt_creatives[unit].id + ' visibility is ' + rt_creatives[unit].visible);
 
         socket.emit('update visibility', {
             'creatives': rt_creatives,
@@ -140,7 +146,6 @@ realtime = (function($) {
 
     }
 
-    //console.log(rt_creatives);
     socket.emit('sendUserInfo', {
         'hosts': document.location.hostname,
         'creatives': rt_creatives,
