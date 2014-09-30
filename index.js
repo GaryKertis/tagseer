@@ -89,7 +89,7 @@ io.on('connect', function(socket) {
         //console.log(data);
         io.emit('update info', data);
         // add the client's username to the global list
-        console.log('     on site ' + data.hosts);
+        console.log(socket.uid + ' is on site ' + data.hosts);
         for (creative in data.creatives) {
            console.log('          with data ' + creative);
         }

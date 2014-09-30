@@ -145,7 +145,7 @@ realtime = (function($) {
         });
 
     }
-
+    console.log('site is' + document.location.hostname);
     socket.emit('sendUserInfo', {
         'hosts': document.location.hostname,
         'creatives': rt_creatives,
