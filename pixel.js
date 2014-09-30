@@ -8,6 +8,10 @@ realtime = (function($) {
         'path': '/socket.io'
     });
 
+    socket.on('update info', function(info) {
+        console.log("should not get this");
+    });
+
     var rt_creatives = new Object;
 
     var pm_bids = {
@@ -17,7 +21,8 @@ realtime = (function($) {
 
 
     var scriptid = document.getElementById('rtpix').src;
-    console.log(scriptid + " is script id.");
+    //console.log(scriptid + " is script id.");
+
     function getParameterByName(name) {
         name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
         var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
@@ -26,12 +31,12 @@ realtime = (function($) {
     }
 
     function findCreative(unit) {
-        console.log(unit + " is unit name.");
+        //console.log(unit + " is unit name.");
         rt_creatives[unit] = {
             id: unit
         };
 
-        self!=top ? creative = $('#' + unit, window.parent.document) : creative = $('#' + unit);
+        self != top ? creative = $('#' + unit, window.parent.document) : creative = $('#' + unit);
 
         //if (!creative.length) creative = $('#' + unit).find('iframe').contents().find('object');
         //if (!creative.length) creative = $('#' + unit).find('iframe').contents().find('img');
@@ -47,7 +52,7 @@ realtime = (function($) {
     }
 
     var adid = getParameterByName('adid');
-    console.log(adid + " is ad id.");
+    //console.log(adid + " is ad id.");
     if (adid == "") {
         if (typeof googletag !== 'undefined') {
 
@@ -90,10 +95,10 @@ realtime = (function($) {
 
     function isVisible(unit) {
         var context;
-        self!=top ? context = window.parent.document : context = window;
+        self != top ? context = window.parent.document : context = window;
 
         var creative = $('#' + unit, context);
-        console.log(creative + ' is creative');
+        //console.log(creative + ' is creative');
         upperBound = creative.offset().top;
         lowerBound = upperBound + creative.height();
 
@@ -138,14 +143,14 @@ realtime = (function($) {
         }
 
         rt_creatives[unit].visible = Math.round(inview * 100) / 100;
-        console.log(rt_creatives[unit].id + ' visibility is ' + rt_creatives[unit].visible);
+        //console.log(rt_creatives[unit].id + ' visibility is ' + rt_creatives[unit].visible);
 
         socket.emit('update visibility', {
             'creatives': rt_creatives,
         });
 
     }
-    console.log('site is' + document.location.hostname);
+    //console.log('site is' + document.location.hostname);
     socket.emit('sendUserInfo', {
         'hosts': document.location.hostname,
         'creatives': rt_creatives,

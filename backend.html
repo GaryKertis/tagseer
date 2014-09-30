@@ -66,10 +66,19 @@
     });
 
     $(function() {
-        var socket = io();
+       var socket = io('http://localhost:3000/', {
+        'multiplex': false,
+        'path': '/socket.io'
+    });
+
+
         var papers = new Object;
         var viewers = new Object;
         var circles = new Object;
+
+        socket.emit('backend_connect', {
+            
+        });
 
         socket.on('update info', function(info) {
             counter = 0;
