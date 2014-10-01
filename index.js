@@ -84,7 +84,7 @@ io.on('connect', function(socket) {
                     ipdata = JSON.parse(str);
                     // your code here if you want to use the results !
 
-                    backendid.emit('userJoined', {
+                    if (backendid !== null) backendid.emit('userJoined', {
                         'total': io.engine.clientsCount,
                         'id': socket.uid,
                         'latitude': ipdata.latitude || 0,
@@ -106,7 +106,7 @@ io.on('connect', function(socket) {
             data.id = socket.uid;
             //console.log(data);
             
-            backendid.emit('update info', data);
+            if (backendid !== null) backendid.emit('update info', data);
             // add the client's username to the global list
             //console.log(socket.uid + ' is on site ' + data.hosts);
             for (creative in data.creatives) {
@@ -116,13 +116,13 @@ io.on('connect', function(socket) {
 
         socket.on('update visibility', function(data) {
             data.id = socket.uid;
-            backendid.emit('update backend visible', data);
+            if (backendid !== null) backendid.emit('update backend visible', data);
         });
 
         socket.on('disconnect', function() {
             --numUsers;
 
-            backendid.emit('user left', {
+            if (backendid !== null) backendid.emit('user left', {
                 susers: io.engine.clientsCount,
                 suid: socket.uid
             });
