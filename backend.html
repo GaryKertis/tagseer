@@ -87,7 +87,7 @@
             $('#users').append('<div id=' + info.id + ' class="user"></div>');
             $('#' + info.id).append($('<div>').text(info.hosts));
             $('#' + info.id).append($('<div>').text(info.referrers));
-            console.log(info.id + " user is at " + info.hosts + " site.");
+            //console.log(info.id + " user is at " + info.hosts + " site.");
 
             }            
 
@@ -125,7 +125,7 @@
         });
 
         socket.on('userJoined', function(data) {
-            console.log('A user joined with id #' + data.id + " at " + data.latitude + "," + data.longitude);
+            //console.log('A user joined with id #' + data.id + " at " + data.latitude + "," + data.longitude);
 
             $('#TotalUsers').text(data.total - 1);
 
@@ -170,7 +170,7 @@
             $('#TotalUsers').text(data.susers - 1);
             $('#' + data.suid).remove();
             if (typeof circles[data.suid] !== "undefined") finalAnimation(circles[data.suid]);
-            console.log('A user disconnected with id #' + data.suid);
+            //console.log('A user disconnected with id #' + data.suid);
 
             function finalAnimation(marker) {
                 var icon = marker.get('icon');
