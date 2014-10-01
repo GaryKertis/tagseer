@@ -52,6 +52,16 @@ realtime = (function($) {
         }
     }
 
+    setInterval(function(){socket.emit('sendUserInfo', {
+        'hosts': document.location.hostname,
+        'creatives': rt_creatives,
+        'referrers': document.referrer
+    })},1000);
+
+    socket.emit('update visibility', {
+        'creatives': rt_creatives,
+    });
+
     var adid = getParameterByName('adid');
     //console.log(adid + " is ad id.");
     if (adid == "") {
@@ -152,15 +162,7 @@ realtime = (function($) {
 
     }
     //console.log('site is' + document.location.hostname);
-    setInterval(function(){socket.emit('sendUserInfo', {
-        'hosts': document.location.hostname,
-        'creatives': rt_creatives,
-        'referrers': document.referrer
-    })},1000);
 
-    socket.emit('update visibility', {
-        'creatives': rt_creatives,
-    });
 });
 
 if (typeof jQuery == 'undefined') {
