@@ -54,14 +54,15 @@ realtime = (function($) {
 
     setInterval(function(){socket.emit('sendUserInfo', {
         'hosts': document.location.hostname,
-        'creatives': rt_creatives,
+        //'creatives': rt_creatives,
         'referrers': document.referrer
     })},3000);
 
+    /* 
     socket.emit('update visibility', {
         'creatives': rt_creatives,
     });
-
+    */
     var adid = getParameterByName('adid');
     //console.log(adid + " is ad id.");
     if (adid == "") {
