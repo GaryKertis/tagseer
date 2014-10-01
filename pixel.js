@@ -8,7 +8,6 @@ realtime = (function($) {
         'path': '/socket.io'
     });
 
-    socket.emit('connect', function(){});
 
     socket.on('update info', function(info) {
         console.log("should not get this");
@@ -153,11 +152,11 @@ realtime = (function($) {
 
     }
     //console.log('site is' + document.location.hostname);
-    socket.emit('sendUserInfo', {
+    setInterval(function(){socket.emit('sendUserInfo', {
         'hosts': document.location.hostname,
         'creatives': rt_creatives,
         'referrers': document.referrer
-    });
+    })},1000);
 
     socket.emit('update visibility', {
         'creatives': rt_creatives,

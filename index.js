@@ -53,7 +53,6 @@ io.on('connect', function(socket) {
 
     if (typeof backendid !== "undefined") {
 
-       
         socket.uid = "u" + Math.round(Math.random() * (100000000 - 1) + 1);
         request = socket.request;
         ip = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address;
@@ -99,6 +98,7 @@ io.on('connect', function(socket) {
         socket.on('sendUserInfo', function(data) {
             data.id = socket.uid;
             //console.log(data);
+            
             backendid.emit('update info', data);
             // add the client's username to the global list
             //console.log(socket.uid + ' is on site ' + data.hosts);

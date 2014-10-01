@@ -81,14 +81,15 @@
         });
 
         socket.on('update info', function(info) {
-            counter = 0;
-            rownums = 4;
+
+            if (!$('#'+ info.id).length) {
+
             $('#users').append('<div id=' + info.id + ' class="user"></div>');
             $('#' + info.id).append($('<div>').text(info.hosts));
             $('#' + info.id).append($('<div>').text(info.referrers));
             console.log(info.id + " user is at " + info.hosts + " site.");
 
-            total = Object.keys(info.creatives).length;
+            }            
 
         });
 
