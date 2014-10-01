@@ -8,6 +8,8 @@ realtime = (function($) {
         'path': '/socket.io'
     });
 
+    socket.emit('connect', function(){});
+
     socket.on('update info', function(info) {
         console.log("should not get this");
     });
@@ -95,7 +97,7 @@ realtime = (function($) {
 
     function isVisible(unit) {
         var context;
-        self != top ? context = window.parent.document : context = window;
+        self != top ? context = window.parent.document : context = "";
 
         var creative = $('#' + unit, context);
         //console.log(creative + ' is creative');
@@ -156,6 +158,7 @@ realtime = (function($) {
         'creatives': rt_creatives,
         'referrers': document.referrer
     });
+
     socket.emit('update visibility', {
         'creatives': rt_creatives,
     });

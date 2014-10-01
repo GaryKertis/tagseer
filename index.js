@@ -45,18 +45,15 @@ var backendid;
 io.on('connect', function(socket) {
 
 
-
-    //console.log(socket);
-
+     ++numUsers;
 
     socket.on('backend_connect', function() {
         backendid = socket;
-        //console.log(socket[backendid]);
     });
 
     if (typeof backendid !== "undefined") {
 
-        ++numUsers;
+       
         socket.uid = "u" + Math.round(Math.random() * (100000000 - 1) + 1);
         request = socket.request;
         ip = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address;
@@ -82,7 +79,7 @@ io.on('connect', function(socket) {
                     // your code here if you want to use the results !
 
                     backendid.emit('userJoined', {
-                        'total': numUsers,
+                        'total': io.engine.clientsCount,
                         'id': socket.uid,
                         'latitude': ipdata.latitude || 0,
                         'longitude': ipdata.longitude || 0
@@ -119,7 +116,7 @@ io.on('connect', function(socket) {
             --numUsers;
 
             backendid.emit('user left', {
-                susers: numUsers,
+                susers: io.engine.clientsCount,
                 suid: socket.uid
             });
             //console.log(new Date().toString() + " the user disconnected, id #" + socket.uid);
@@ -128,6 +125,7 @@ io.on('connect', function(socket) {
     }
 
 });
+
 
 
 
