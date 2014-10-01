@@ -39,22 +39,29 @@ app.get('/backend', function(req, res) {
     res.sendFile('/backend.html', options);
 })
 
-var backendid;
-//console.log(backendid);
+var backendid = null;
 
 io.on('connect', function(socket) {
 
-
      ++numUsers;
 
-    socket.on('backend_connect', function() {
+    socket.on('backend_connected', function() {
         backendid = socket;
+        console.log(new Date().toString() + "the backend connected.");
+        backendid.on('disconnect', function() {
+            backendid = null; 
+            console.log(new Date().toString() + "the backend disconnected.");
+        });
     });
 
-    if (typeof backendid !== "undefined") {
+    if (backendid !== null) doSockets();
+
+    function doSockets() {
+
+        socket.emit('client_ok_go');
 
         socket.uid = "u" + Math.round(Math.random() * (100000000 - 1) + 1);
-        request = socket.request;
+        
         ip = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address;
 
         if (typeof ip !== "undefined") {
@@ -119,9 +126,9 @@ io.on('connect', function(socket) {
                 susers: io.engine.clientsCount,
                 suid: socket.uid
             });
+
             //console.log(new Date().toString() + " the user disconnected, id #" + socket.uid);
         });
-
     }
 
 });

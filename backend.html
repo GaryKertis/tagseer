@@ -76,9 +76,8 @@
         var viewers = new Object;
         var circles = new Object;
 
-        socket.emit('backend_connect', {
-            
-        });
+        
+        socket.emit('backend_connected');
 
         socket.on('update info', function(info) {
 

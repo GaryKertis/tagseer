@@ -8,18 +8,12 @@ realtime = (function($) {
         'path': '/socket.io'
     });
 
-
-    socket.on('update info', function(info) {
-        console.log("should not get this");
-    });
-
     var rt_creatives = new Object;
 
     var pm_bids = {
         "bidid": [],
         "bid": []
     };
-
 
     var scriptid = document.getElementById('rtpix').src;
     //console.log(scriptid + " is script id.");
@@ -52,17 +46,17 @@ realtime = (function($) {
         }
     }
 
-    setInterval(function(){socket.emit('sendUserInfo', {
-        'hosts': document.location.hostname,
-        //'creatives': rt_creatives,
-        'referrers': document.referrer
-    })},3000);
+    socket.on('client_ok_go', function() {
 
-    /* 
+    socket.emit('sendUserInfo', {
+        'hosts': document.location.hostname,
+        'referrers': document.referrer
+    });
+
     socket.emit('update visibility', {
         'creatives': rt_creatives,
     });
-    */
+    });
     var adid = getParameterByName('adid');
     //console.log(adid + " is ad id.");
     if (adid == "") {
@@ -161,9 +155,8 @@ realtime = (function($) {
             'creatives': rt_creatives,
         });
 
-    }
     //console.log('site is' + document.location.hostname);
-
+    }
 });
 
 if (typeof jQuery == 'undefined') {
@@ -207,8 +200,6 @@ if (typeof jQuery == 'undefined') {
                 // Use .noConflict(), then run your jQuery Code
                 $.noConflict();
                 realtime(jQuery);
-
-
             }
 
         }
