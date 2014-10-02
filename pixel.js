@@ -48,12 +48,13 @@ realtime = (function($) {
 
     socket.on('client_ok_go', function() {
 
-    socket.emit('sendUserInfo', {
-        'hosts': document.location.hostname,
-        'referrers': document.referrer
+    self != top ? site = document.referrer : site = document.location.hostname;
+
+    socket.emit('sui', {
+        'site': site
     });
 
-    socket.emit('update visibility', {
+    socket.emit('uv', {
         'creatives': rt_creatives,
     });
     });
@@ -151,7 +152,7 @@ realtime = (function($) {
         rt_creatives[unit].visible = Math.round(inview * 100) / 100;
         //console.log(rt_creatives[unit].id + ' visibility is ' + rt_creatives[unit].visible);
 
-        socket.emit('update visibility', {
+        socket.emit('uv', {
             'creatives': rt_creatives,
         });
 

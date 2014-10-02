@@ -31,22 +31,23 @@ var mapOptions = {
         var circles = new Object;
 
         
-        socket.emit('backend_connected');
+        socket.emit('bc');
 
-        socket.on('update info', function(info) {
+        socket.on('ui', function(info) {
 
             if (!$('#'+ info.id).length) {
 
             $('#users').append('<div id=' + info.id + ' class="user"></div>');
-            $('#' + info.id).append($('<div>').text(info.hosts));
-            $('#' + info.id).append($('<div>').text(info.referrers));
+            $('#' + info.id).append($('<div>').text(info.site));
+            $('#site').append($('<p>').text(info.site));
+
             //console.log(info.id + " user is at " + info.hosts + " site.");
 
             }            
 
         });
 
-        socket.on('update backend visible', function(info) {
+        socket.on('ubv', function(info) {
             for (var n in info.creatives) {
                 creative = info.creatives[n];
                 if (typeof circles[info.id] !== "undefined") {
@@ -77,7 +78,7 @@ var mapOptions = {
             }
         });
 
-        socket.on('userJoined', function(data) {
+        socket.on('uj', function(data) {
             //console.log('A user joined with id #' + data.id + " at " + data.latitude + "," + data.longitude);
 
             $('#TotalUsers').text(data.total - 1);
@@ -119,7 +120,7 @@ var mapOptions = {
 
         });
 
-        socket.on('user left', function(data) {
+        socket.on('ul', function(data) {
             $('#TotalUsers').text(data.susers - 1);
             $('#' + data.suid).remove();
             if (typeof circles[data.suid] !== "undefined") finalAnimation(circles[data.suid]);

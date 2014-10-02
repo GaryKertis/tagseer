@@ -45,7 +45,7 @@ io.on('connect', function(socket) {
 
      ++numUsers;
 
-    socket.on('backend_connected', function() {
+    socket.on('bc', function() {
         backendid = socket;
         console.log(new Date().toString() + "the backend connected.");
         backendid.on('disconnect', function() {
@@ -84,7 +84,7 @@ io.on('connect', function(socket) {
                     ipdata = JSON.parse(str);
                     // your code here if you want to use the results !
 
-                    if (backendid !== null) backendid.emit('userJoined', {
+                    if (backendid !== null) backendid.emit('uj', {
                         'total': io.engine.clientsCount,
                         'id': socket.uid,
                         'latitude': ipdata.latitude || 0,
@@ -102,11 +102,11 @@ io.on('connect', function(socket) {
 
         //console.log(new Date().toString() + " a user joined, id #" + socket.uid);
 
-        socket.on('sendUserInfo', function(data) {
+        socket.on('sui', function(data) {
             data.id = socket.uid;
             //console.log(data);
             
-            if (backendid !== null) backendid.emit('update info', data);
+            if (backendid !== null) backendid.emit('ui', data);
             // add the client's username to the global list
             //console.log(socket.uid + ' is on site ' + data.hosts);
             for (creative in data.creatives) {
@@ -114,15 +114,15 @@ io.on('connect', function(socket) {
             }
         });
 
-        socket.on('update visibility', function(data) {
+        socket.on('uv', function(data) {
             data.id = socket.uid;
-            if (backendid !== null) backendid.emit('update backend visible', data);
+            if (backendid !== null) backendid.emit('ubv', data);
         });
 
         socket.on('disconnect', function() {
             --numUsers;
 
-            if (backendid !== null) backendid.emit('user left', {
+            if (backendid !== null) backendid.emit('ul', {
                 susers: io.engine.clientsCount,
                 suid: socket.uid
             });
