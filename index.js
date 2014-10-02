@@ -23,12 +23,12 @@ var enableCORS = function(req, res, next) {
 // enable CORS!
 app.use(enableCORS);
 
-app.use(express.static(__dirname));
+app.use(express.static("public"));
 
 app.enable('trust proxy');
 
 var options = {
-    root: __dirname
+    root: "public"
 }
 
 app.get('/pixel', function(req, res) {
