@@ -13,10 +13,9 @@
         display: none;
     }
     #map-canvas {
-        height: 600px;
+        height: 500px;
         margin-bottom: 10px;
     }
-
     </style>
 
     <link rel="stylesheet" href="bootstrap.min.css">
@@ -25,17 +24,15 @@
 
 <body>
 
-    <h3>Connected Users: <span id="TotalUsers" class="label label-default"></span></h3>
-    <br>
-
-    <span id="countrylist"></span>
-
-    <div id="users"></div>
-    <div id="charts" class="container">
-        <div id="map-canvas" class="row"></div>
-        <ul id="site" class="listgroup row"></ul>
+    <div class="container">
+        <h3>Connected Users:
+            <span id="TotalUsers" class="label label-default"></span>
+        </h3>
+        <div id="charts" class="container">
+            <div id="map-canvas" class="row"></div>
+            <ul id="site" class="listgroup row"></ul>
+        </div>
     </div>
-
     <script src="https://cdn.socket.io/socket.io-1.1.0.js"></script>
     <script src="raphael-min.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>

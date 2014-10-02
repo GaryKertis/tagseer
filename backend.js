@@ -21,7 +21,7 @@ var mapOptions = {
 
     $(function() {
        var socket = io(document.location.host, {
-        'multiplex': false,
+        'multiplex': true,
         'path': '/socket.io'
     });
 
@@ -37,9 +37,8 @@ var mapOptions = {
 
             if (!$('#'+ info.id).length) {
 
-            $('#users').append('<div id=' + info.id + ' class="user"></div>');
             $('#' + info.id).append($('<div>').text(info.site));
-            $('#site').append($('<li>').text(info.site).addClass("list-group-item"));
+            $('#site').append($('<li id="' + info.id + '">').text(info.site).addClass("list-group-item"));
 
             //console.log(info.id + " user is at " + info.hosts + " site.");
 

@@ -4,7 +4,7 @@ realtime = (function($) {
     //console.log("Starting realtime script");
 
     var socket = io('http://' + document.getElementById('rtpix').src.split('/')[2], {
-        'multiplex': false,
+        'multiplex': true,
         'path': '/socket.io'
     });
 
