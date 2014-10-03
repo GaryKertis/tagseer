@@ -11,7 +11,7 @@
         padding-start: 0px;
     }
     #map-canvas {
-        height: 500px;
+        height: 400px;
         margin-bottom: 10px;
     }
     .header {
@@ -25,28 +25,35 @@
 
 <body>
 
-    <div class="container">
-        <div class="page-header">
-            <h3 class="header"><!--Tag Seer--></h3>
-            <h5>Connected Users:
-                <span id="TotalUsers" class="label label-default"></span>
-            </h5>
+
+
+    </head>
+
+    <body>
+
+        <div class="container">
+            <div class="page-header">
+                <h3 class="header">
+                    <!--Tag Seer-->
+                </h3>
+                <h5>Connected Users:
+                    <span id="TotalUsers" class="label label-default"></span>
+                </h5>
+            </div>
+            <div id="charts" class="container">
+                <div id="map-canvas" class="row"></div>
+                <div id="chart_div" class="row" style="height: 400px;"></div>
+            </div>
         </div>
-        <div id="charts" class="container">
-            <div id="map-canvas" class="row"></div>
-            <ul id="site" class="listgroup row"></ul>
-        </div>
-    </div>
-    <script src="https://cdn.socket.io/socket.io-1.1.0.js"></script>
-    <script src="raphael-min.js"></script>
-    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBH5tjVmw-7mstFrGW6-hAE8U0MqEJMdTw">
-    </script>
-    <script src="backend.js"></script>
-
-
-
-</body>
+        <script src="https://cdn.socket.io/socket.io-1.1.0.js"></script>
+        <script src="raphael-min.js"></script>
+        <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBH5tjVmw-7mstFrGW6-hAE8U0MqEJMdTw">
+        </script>
+        <script src="backend.js"></script>
+        
+    </body>
 
 </html>
 
