@@ -14,8 +14,11 @@
         height: 500px;
         margin-bottom: 10px;
     }
+    .header {
+        font-family: 'Press Start 2P', cursive;
+    }
     </style>
-
+    <link href='http://fonts.googleapis.com/css?family=Press+Start+2P' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="bootstrap.min.css">
 
 </head>
@@ -23,9 +26,12 @@
 <body>
 
     <div class="container">
-        <h3>Connected Users:
-            <span id="TotalUsers" class="label label-default"></span>
-        </h3>
+        <div class="page-header">
+            <h3 class="header"><!--Tag Seer--></h3>
+            <h5>Connected Users:
+                <span id="TotalUsers" class="label label-default"></span>
+            </h5>
+        </div>
         <div id="charts" class="container">
             <div id="map-canvas" class="row"></div>
             <ul id="site" class="listgroup row"></ul>
@@ -42,7 +48,7 @@
 
 </body>
 
-</html>pt>
+</html>
 
 
 
