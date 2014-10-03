@@ -64,7 +64,7 @@ io.on('connect', function(socket) {
             if (backendid === null) {
                 socket.disconnect();
             }
-        }, 1000);
+        }, 100);
     }
 
 
