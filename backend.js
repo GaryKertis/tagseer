@@ -21,7 +21,7 @@ var mapOptions = {
 
     $(function() {
        var socket = io(document.location.host, {
-        'multiplex': false,
+        'multiplex': true,
         'path': '/socket.io'
     });
 
