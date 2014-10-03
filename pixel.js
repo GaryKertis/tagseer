@@ -47,7 +47,7 @@ realtime = (function($) {
     }
 
     socket.on('ok', function() {
-    self != top ? site = document.referrer.split('?')[0] : site = document.location.hostname;
+    self != top ? site = document.referrer.split('/')[2] : site = document.location.hostname;
 
     socket.emit('sui', {
         'site': site

@@ -1,6 +1,6 @@
 var mapOptions = {
-    center: new google.maps.LatLng(0, 0),
-    zoom: 2,
+    center: new google.maps.LatLng(39.50, -98.35),
+    zoom: 4,
 };
 
 var sitelist = [];
