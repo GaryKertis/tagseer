@@ -4,7 +4,7 @@ var external = require('http');
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var numUsers = 0;
-
+var allsockets = [];
 var enableCORS = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', 'http://thelivre.com');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
@@ -43,22 +43,36 @@ var backendid = null;
 
 io.on('connect', function(socket) {
 
-     ++numUsers;
-
     socket.on('bc', function() {
         backendid = socket;
         console.log(new Date().toString() + "the backend connected.");
         backendid.on('disconnect', function() {
             backendid = null; 
             console.log(new Date().toString() + "the backend disconnected.");
+            for (i=0;i<allsockets.length;i++) {
+                allsockets[i].disconnect();
+            }
+            allsockets = [];
         });
     });
 
-    if (backendid !== null) doSockets();
+    if (backendid !== null) {
+        doSockets(); 
+    }
+    else {
+        var timeout = setTimeout(function(){
+            if (backendid === null) {
+                socket.disconnect();
+            }
+        }, 1000);
+    }
+
 
     function doSockets() {
 
-        socket.emit('client_ok_go');
+        socket.emit('ok');
+
+        allsockets.push(socket);
 
         socket.uid = "u" + Math.round(Math.random() * (100000000 - 1) + 1);
         

@@ -4,7 +4,7 @@ realtime = (function($) {
     //console.log("Starting realtime script");
 
     var socket = io('http://' + document.getElementById('rtpix').src.split('/')[2], {
-        'multiplex': true,
+        'multiplex': false,
         'path': '/socket.io'
     });
 
@@ -46,8 +46,7 @@ realtime = (function($) {
         }
     }
 
-    socket.on('client_ok_go', function() {
-
+    socket.on('ok', function() {
     self != top ? site = document.referrer : site = document.location.hostname;
 
     socket.emit('sui', {
