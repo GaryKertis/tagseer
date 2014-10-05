@@ -158,7 +158,7 @@ $(function() {
     socket.on('uj', function(data) {
         //console.log('A user joined with id #' + data.id + " at " + data.latitude + "," + data.longitude);
 
-        $('#TotalUsers').text(data.total - 1);
+        $('#TotalUsers').text(data.total);
 
 
         var populationOptions = {
@@ -198,7 +198,7 @@ $(function() {
     });
 
     socket.on('ul', function(data) {
-        $('#TotalUsers').text(data.susers - 1);
+        $('#TotalUsers').text(data.susers);
 
         sitelist.splice(sitelist.indexOf(userData[data.id]),1);
 

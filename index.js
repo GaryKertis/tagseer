@@ -3,7 +3,6 @@ var app = express();
 var external = require('http');
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var numUsers = 0;
 var allsockets = [];
 var enableCORS = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', 'http://thelivre.com');
@@ -134,7 +133,6 @@ io.on('connect', function(socket) {
         });
 
         socket.on('disconnect', function() {
-            --numUsers;
 
             if (backendid !== null) backendid.emit('ul', {
                 susers: io.engine.clientsCount,
