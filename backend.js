@@ -67,7 +67,7 @@ function sitesChart(siteData) {
 $(function() {
    
     var socket = io(document.location.host, {
-        'multiplex': true,
+        'multiplex': false,
         'path': '/socket.io'
     });
 
