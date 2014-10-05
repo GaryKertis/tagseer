@@ -86,8 +86,11 @@ io.on('connect', function(socket) {
 
         socket.emit('ok');
 
-        allsockets.push(socket);
+        //console.log(new Date().toString() + " a user joined, id #" + socket.uid);
 
+        socket.on('sui', function(data) {
+
+                   allsockets.push(socket);
 
         socket.uid = "u" + Math.round(Math.random() * (100000000 - 1) + 1);
         
@@ -126,12 +129,7 @@ io.on('connect', function(socket) {
                 console.log("Got error: " + e.message);
             });
         }
-
-
-
-        //console.log(new Date().toString() + " a user joined, id #" + socket.uid);
-
-        socket.on('sui', function(data) {
+            
             data.id = socket.uid;
             //console.log(data);
             
