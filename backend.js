@@ -157,7 +157,6 @@ $(function() {
 
     socket.on('uj', function(data) {
         //console.log('A user joined with id #' + data.id + " at " + data.latitude + "," + data.longitude);
-
         $('#TotalUsers').text(sitelist.length);
 
 
