@@ -107,14 +107,15 @@ $(function() {
     }
 
 
-
+    counter = 0;
     socket.on('ui', function(info) {
-
+        counter++;
+        console.log("Sites with site name = " + counter);
         if (!$('#' + info.id).length) {
             userData[info.id] = info.site;
             sitelist.push(info.site);
         } else {
-             userData[info.id] = 'unknown';
+            userData[info.id] = 'unknown';
             sitelist.push('unknown');
         }
 
