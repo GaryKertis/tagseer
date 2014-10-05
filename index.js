@@ -41,7 +41,6 @@ app.get('/backend', function(req, res) {
 var backendid = null;
 
 io.on('connect', function(socket) {
-    console.log(socket.id);
 
     socket.on('bc', function() {
         backendid = socket;

@@ -161,6 +161,7 @@ $(function() {
         $('#TotalUsers').text(data.total);
 
 
+
         var populationOptions = {
             icon: {
                 path: google.maps.SymbolPath.CIRCLE,
@@ -198,6 +199,9 @@ $(function() {
     });
 
     socket.on('ul', function(data) {
+
+        if(typeof userData[data.id] === "undefined") console.log(data.id + " never had a site.");
+
         $('#TotalUsers').text(data.susers);
 
         sitelist.splice(sitelist.indexOf(userData[data.id]),1);
