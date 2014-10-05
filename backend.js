@@ -107,7 +107,7 @@ $(function() {
     }
 
 
-    counter = 0;
+
     socket.on('ui', function(info) {
 
         if (!$('#' + info.id).length) {

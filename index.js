@@ -53,7 +53,7 @@ io.on('connect', function(socket) {
             backendid = null; 
             console.log(new Date().toString() + "the backend disconnected.");
             for (sock in io.sockets.sockets) {
-                io.sockets.sockets[sock].disconnect();
+                if (io.sockets.sockets[sock] != backendid) io.sockets.sockets[sock].disconnect();
             };
         });
     });
@@ -89,7 +89,7 @@ io.on('connect', function(socket) {
         socket.on('disconnect', function() {
 
             if (backendid !== null) backendid.emit('ul', {
-                susers: io.sockets.sockets.length,
+                susers: io.sockets.sockets.length - 1,
                 suid: socket.uid
             });
 
@@ -119,7 +119,7 @@ io.on('connect', function(socket) {
                     // your code here if you want to use the results !
 
                     if (backendid !== null) backendid.emit('uj', {
-                        'total': io.sockets.sockets.length,
+                        'total': io.sockets.sockets.length - 1,
                         'id': socket.uid,
                         'latitude': ipdata.latitude || 0,
                         'longitude': ipdata.longitude || 0
