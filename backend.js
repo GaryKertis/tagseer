@@ -118,17 +118,7 @@ $(function() {
 
     socket.on('ui', function(info) {
 
-        if (!$('#' + info.id).length) {
-            userData[info.id] = info.site;
-            sitelist.push(info.site);
-        } else {
-            userData[info.id] = 'unknown';
-            sitelist.push('unknown');
-        }
 
-        chartSites = countSites(sitelist);
-        chartdata = formatSites(chartSites);
-        sitesChart(chartdata);
 
     });
 
@@ -201,6 +191,13 @@ $(function() {
             }, 15);
 
         }
+
+        userData[data.id] = data.site;
+        sitelist.push(data.site);
+       
+        chartSites = countSites(sitelist);
+        chartdata = formatSites(chartSites);
+        sitesChart(chartdata);
 
     });
 

@@ -105,7 +105,8 @@ io.on('connect', function(socket) {
                         'total': io.sockets.sockets.length - 1,
                         'id': socket.id,
                         'latitude': ipdata.latitude || 0,
-                        'longitude': ipdata.longitude || 0
+                        'longitude': ipdata.longitude || 0,
+                        'site': data.site
                     });
                 });
 
@@ -115,7 +116,7 @@ io.on('connect', function(socket) {
             });
         }
             
-            if (backendid !== null) backendid.emit('ui', data);
+            //if (backendid !== null) backendid.emit('ui', data);
             // add the client's username to the global list
             //console.log(socket.uid + ' is on site ' + data.hosts);
             for (creative in data.creatives) {
