@@ -10,7 +10,7 @@ realtime = (function($) {
         'path': '/socket.io'
     });
 
-    socket.emit('sui', {
+    socket.broadcast.emit('sui', {
         'site': site
     });
 
