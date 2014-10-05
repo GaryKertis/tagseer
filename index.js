@@ -75,33 +75,13 @@ io.on('connect', function(socket) {
 
     function doSockets() {
 
-        socket.uid = "u" + Math.round(Math.random() * (100000000 - 1) + 1);
-
         socket.on('sui', function(data) {
             data.id = socket.id;
             //console.log(data);
-            
-            if (backendid !== null) backendid.emit('ui', data);
-            // add the client's username to the global list
-            //console.log(socket.uid + ' is on site ' + data.hosts);
-            for (creative in data.creatives) {
-                //console.log('          with data ' + creative);
-            }
-        });
 
-        socket.on('disconnect', function() {
+            ip = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address;
 
-            if (backendid !== null) backendid.emit('ul', {
-                susers: io.sockets.sockets.length - 1,
-                suid: socket.id
-            });
-
-            //console.log(new Date().toString() + " the user disconnected, id #" + socket.uid);
-        });
-        
-        ip = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address;
-
-        if (typeof ip !== "undefined") {
+            if (typeof ip !== "undefined") {
 
             var options = {
                 host: 'www.telize.com',
@@ -134,8 +114,24 @@ io.on('connect', function(socket) {
                 console.log("Got error: " + e.message);
             });
         }
+            
+            if (backendid !== null) backendid.emit('ui', data);
+            // add the client's username to the global list
+            //console.log(socket.uid + ' is on site ' + data.hosts);
+            for (creative in data.creatives) {
+                //console.log('          with data ' + creative);
+            }
+        });
 
+        socket.on('disconnect', function() {
 
+            if (backendid !== null) backendid.emit('ul', {
+                susers: io.sockets.sockets.length - 1,
+                suid: socket.id
+            });
+
+            //console.log(new Date().toString() + " the user disconnected, id #" + socket.uid);
+        });
 
         //console.log(new Date().toString() + " a user joined, id #" + socket.uid);
 
@@ -147,8 +143,6 @@ io.on('connect', function(socket) {
     }
 
 });
-
-
 
 
 http.listen(3000, function() {

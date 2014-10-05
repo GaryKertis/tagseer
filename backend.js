@@ -57,10 +57,18 @@ function sitesChart(siteData) {
         vAxis: {
             minValue: 0,
             maxValue: 25
-        }
+        },
+        showValue: true
     };
 
-    chart.draw(data, options);
+    var view = new google.visualization.DataView(data);
+      view.setColumns([0, 1,
+                       { calc: "stringify",
+                         sourceColumn: 1,
+                         type: "string",
+                         role: "annotation" }]);
+
+    chart.draw(view, options);
 }
 
 
