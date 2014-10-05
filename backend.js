@@ -56,7 +56,7 @@ function sitesChart(siteData) {
         },
         vAxis: {
             minValue: 0,
-            maxValue: 50
+            maxValue: 25
         }
     };
 
@@ -159,8 +159,6 @@ $(function() {
         //console.log('A user joined with id #' + data.id + " at " + data.latitude + "," + data.longitude);
 
         $('#TotalUsers').text(data.total);
-
-
 
         var populationOptions = {
             icon: {
