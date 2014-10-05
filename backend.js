@@ -200,11 +200,11 @@ $(function() {
 
     socket.on('ul', function(data) {
 
-        if(typeof userData[data.id] === "undefined") console.log(data.id + " never had a site.");
+        if(typeof userData[data.suid] === "undefined") console.log(data.suid + " never had a site.");
 
         $('#TotalUsers').text(data.susers);
 
-        sitelist.splice(sitelist.indexOf(userData[data.id]),1);
+        sitelist.splice(sitelist.indexOf(userData[data.suid]),1);
 
         chartSites = countSites(sitelist);
         chartdata = formatSites(chartSites);
