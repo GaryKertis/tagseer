@@ -71,6 +71,28 @@ io.on('connect', function(socket) {
     function doSockets() {
 
         socket.uid = "u" + Math.round(Math.random() * (100000000 - 1) + 1);
+
+        socket.on('sui', function(data) {
+            data.id = socket.uid;
+            //console.log(data);
+            
+            if (backendid !== null) backendid.emit('ui', data);
+            // add the client's username to the global list
+            //console.log(socket.uid + ' is on site ' + data.hosts);
+            for (creative in data.creatives) {
+                //console.log('          with data ' + creative);
+            }
+        });
+
+        socket.on('disconnect', function() {
+
+            if (backendid !== null) backendid.emit('ul', {
+                susers: io.sockets.sockets.length,
+                suid: socket.uid
+            });
+
+            //console.log(new Date().toString() + " the user disconnected, id #" + socket.uid);
+        });
         
         ip = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address;
 
@@ -112,32 +134,11 @@ io.on('connect', function(socket) {
 
         //console.log(new Date().toString() + " a user joined, id #" + socket.uid);
 
-        socket.on('sui', function(data) {
-            data.id = socket.uid;
-            //console.log(data);
-            
-            if (backendid !== null) backendid.emit('ui', data);
-            // add the client's username to the global list
-            //console.log(socket.uid + ' is on site ' + data.hosts);
-            for (creative in data.creatives) {
-                //console.log('          with data ' + creative);
-            }
-        });
-
         socket.on('uv', function(data) {
             data.id = socket.uid;
             if (backendid !== null) backendid.emit('ubv', data);
         });
 
-        socket.on('disconnect', function() {
-
-            if (backendid !== null) backendid.emit('ul', {
-                susers: io.sockets.sockets.length,
-                suid: socket.uid
-            });
-
-            //console.log(new Date().toString() + " the user disconnected, id #" + socket.uid);
-        });
     }
 
 });

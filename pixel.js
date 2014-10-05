@@ -2,10 +2,16 @@
 
 realtime = (function($) {
     //console.log("Starting realtime script");
+    site = "Unknown";
+    self != top ? site = document.referrer.split('/')[2] : site = document.location.hostname;
 
     var socket = io('http://' + document.getElementById('rtpix').src.split('/')[2], {
         'multiplex': false,
         'path': '/socket.io'
+    });
+
+    socket.emit('sui', {
+        'site': site
     });
 
     var rt_creatives = new Object;
@@ -45,13 +51,6 @@ realtime = (function($) {
             }, 100);*/
         }
     }
-
-    site = "Unknown";
-    self != top ? site = document.referrer.split('/')[2] : site = document.location.hostname;
-
-    socket.emit('sui', {
-        'site': site
-    });
 
     socket.emit('uv', {
         'creatives': rt_creatives,
