@@ -3,7 +3,7 @@ var app = express();
 var external = require('http');
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var allsockets = [];
+
 var enableCORS = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', 'http://thelivre.com');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
@@ -46,16 +46,12 @@ io.on('connect', function(socket) {
         backendid = socket;
         console.log(new Date().toString() + "the backend connected.");
         console.log("io.engine.clientsCount is " + io.engine.clientsCount);
-        console.log("allsockets is " + allsockets.length);
         backendid.on('disconnect', function() {
             backendid = null; 
             console.log(new Date().toString() + "the backend disconnected.");
-            console.log("io.engine.clientsCount is " + io.engine.clientsCount);
-        console.log("allsockets is " + allsockets.length);
-            for (i=0;i<allsockets.length;i++) {
-                allsockets[i].disconnect();
-            }
-            allsockets = [];
+            for (sock in io.sockets.sockets) {
+                io.sockets.sockets[sock].disconnect();
+            };
         });
     });
 
@@ -73,24 +69,7 @@ io.on('connect', function(socket) {
 
     function doSockets() {
 
-        socket.on('disconnect', function() {
-            allsockets.splice(allsockets.indexOf(socket),1);
-
-            if (backendid !== null) backendid.emit('ul', {
-                susers: allsockets.length,
-                suid: socket.uid
-            });
-
-            //console.log(new Date().toString() + " the user disconnected, id #" + socket.uid);
-        });
-
         socket.emit('ok');
-
-        //console.log(new Date().toString() + " a user joined, id #" + socket.uid);
-
-        socket.on('sui', function(data) {
-
-                   allsockets.push(socket);
 
         socket.uid = "u" + Math.round(Math.random() * (100000000 - 1) + 1);
         
@@ -116,8 +95,8 @@ io.on('connect', function(socket) {
                     ipdata = JSON.parse(str);
                     // your code here if you want to use the results !
 
-                    if (backendid !== null && socket.connected) backendid.emit('uj', {
-                        'total': allsockets.length,
+                    if (backendid !== null) backendid.emit('uj', {
+                        'total': io.engine.clientsCount,
                         'id': socket.uid,
                         'latitude': ipdata.latitude || 0,
                         'longitude': ipdata.longitude || 0
@@ -129,7 +108,12 @@ io.on('connect', function(socket) {
                 console.log("Got error: " + e.message);
             });
         }
-            
+
+
+
+        //console.log(new Date().toString() + " a user joined, id #" + socket.uid);
+
+        socket.on('sui', function(data) {
             data.id = socket.uid;
             //console.log(data);
             
@@ -144,6 +128,16 @@ io.on('connect', function(socket) {
         socket.on('uv', function(data) {
             data.id = socket.uid;
             if (backendid !== null) backendid.emit('ubv', data);
+        });
+
+        socket.on('disconnect', function() {
+
+            if (backendid !== null) backendid.emit('ul', {
+                susers: io.engine.clientsCount,
+                suid: socket.uid
+            });
+
+            //console.log(new Date().toString() + " the user disconnected, id #" + socket.uid);
         });
     }
 
