@@ -41,14 +41,18 @@ app.get('/backend', function(req, res) {
 var backendid = null;
 
 io.on('connect', function(socket) {
+    console.log(socket.id);
 
     socket.on('bc', function() {
         backendid = socket;
         for (sock in io.sockets.sockets) {
-        console.log("Somehow socket " + io.sockets.sockets[sock].id + "is connected: " + io.sockets.sockets[sock].connected)
+            if (io.sockets.sockets[sock] != backendid) io.sockets.sockets[sock].disconnect();
+        }
+        for (sock in io.sockets.sockets) {
+        console.log("Socket " + io.sockets.sockets[sock].id + "is connected: " + io.sockets.sockets[sock].connected)
         };
         console.log(new Date().toString() + "the backend connected.");
-        console.log("io.sockets.sockets.length is " + io.sockets.sockets.length);
+        console.log("io.sockets.sockets.length is " + io.sockets.sockets.length-1);
         backendid.on('disconnect', function() {
             backendid = null; 
             console.log(new Date().toString() + "the backend disconnected.");
@@ -75,7 +79,7 @@ io.on('connect', function(socket) {
         socket.uid = "u" + Math.round(Math.random() * (100000000 - 1) + 1);
 
         socket.on('sui', function(data) {
-            data.id = socket.uid;
+            data.id = socket.id;
             //console.log(data);
             
             if (backendid !== null) backendid.emit('ui', data);
@@ -90,7 +94,7 @@ io.on('connect', function(socket) {
 
             if (backendid !== null) backendid.emit('ul', {
                 susers: io.sockets.sockets.length - 1,
-                suid: socket.uid
+                suid: socket.id
             });
 
             //console.log(new Date().toString() + " the user disconnected, id #" + socket.uid);
@@ -118,9 +122,9 @@ io.on('connect', function(socket) {
                     ipdata = JSON.parse(str);
                     // your code here if you want to use the results !
 
-                    if (backendid !== null) backendid.emit('uj', {
+                    if (backendid !== null && socket.connected) backendid.emit('uj', {
                         'total': io.sockets.sockets.length - 1,
-                        'id': socket.uid,
+                        'id': socket.id,
                         'latitude': ipdata.latitude || 0,
                         'longitude': ipdata.longitude || 0
                     });
@@ -137,7 +141,7 @@ io.on('connect', function(socket) {
         //console.log(new Date().toString() + " a user joined, id #" + socket.uid);
 
         socket.on('uv', function(data) {
-            data.id = socket.uid;
+            data.id = socket.id;
             if (backendid !== null) backendid.emit('ubv', data);
         });
 
