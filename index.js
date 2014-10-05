@@ -96,7 +96,7 @@ io.on('connect', function(socket) {
                     // your code here if you want to use the results !
 
                     if (backendid !== null) backendid.emit('uj', {
-                        'total': io.engine.clientsCount,
+                        'total': io.sockets.sockets.length,
                         'id': socket.uid,
                         'latitude': ipdata.latitude || 0,
                         'longitude': ipdata.longitude || 0
