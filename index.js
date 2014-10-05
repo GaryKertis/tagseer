@@ -45,7 +45,7 @@ io.on('connect', function(socket) {
     socket.on('bc', function() {
         backendid = socket;
         console.log(new Date().toString() + "the backend connected.");
-        console.log("io.engine.clientsCount is " + io.engine.clientsCount);
+        console.log("io.engine.clientsCount is " + io.sockets.sockets.length);
         backendid.on('disconnect', function() {
             backendid = null; 
             console.log(new Date().toString() + "the backend disconnected.");
@@ -63,7 +63,7 @@ io.on('connect', function(socket) {
             if (backendid === null) {
                 socket.disconnect();
             }
-        }, 100);
+        }, 200);
     }
 
 
@@ -133,7 +133,7 @@ io.on('connect', function(socket) {
         socket.on('disconnect', function() {
 
             if (backendid !== null) backendid.emit('ul', {
-                susers: io.engine.clientsCount,
+                susers: io.sockets.sockets.length,
                 suid: socket.uid
             });
 
