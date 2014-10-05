@@ -73,9 +73,21 @@ io.on('connect', function(socket) {
 
     function doSockets() {
 
+        socket.on('disconnect', function() {
+            allsockets.splice(allsockets.indexOf(socket),1);
+
+            if (backendid !== null) backendid.emit('ul', {
+                susers: allsockets.length,
+                suid: socket.uid
+            });
+
+            //console.log(new Date().toString() + " the user disconnected, id #" + socket.uid);
+        });
+
         socket.emit('ok');
 
         allsockets.push(socket);
+
 
         socket.uid = "u" + Math.round(Math.random() * (100000000 - 1) + 1);
         
@@ -134,17 +146,6 @@ io.on('connect', function(socket) {
         socket.on('uv', function(data) {
             data.id = socket.uid;
             if (backendid !== null) backendid.emit('ubv', data);
-        });
-
-        socket.on('disconnect', function() {
-            allsockets.splice(allsockets.indexOf(socket),1);
-
-            if (backendid !== null) backendid.emit('ul', {
-                susers: allsockets.length,
-                suid: socket.uid
-            });
-
-            //console.log(new Date().toString() + " the user disconnected, id #" + socket.uid);
         });
     }
 
