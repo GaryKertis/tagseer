@@ -44,6 +44,9 @@ io.on('connect', function(socket) {
 
     socket.on('bc', function() {
         backendid = socket;
+        for (sock in io.sockets.sockets) {
+        console.log("Somehow socket " + io.sockets.sockets[sock].id + "is connected: " + io.sockets.sockets[sock].connected)
+        };
         console.log(new Date().toString() + "the backend connected.");
         console.log("io.sockets.sockets.length is " + io.sockets.sockets.length);
         backendid.on('disconnect', function() {
@@ -51,7 +54,6 @@ io.on('connect', function(socket) {
             console.log(new Date().toString() + "the backend disconnected.");
             for (sock in io.sockets.sockets) {
                 io.sockets.sockets[sock].disconnect();
-                console.log("Is connected: " + io.sockets.sockets[sock].connected)
             };
         });
     });
