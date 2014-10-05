@@ -101,7 +101,7 @@ io.on('connect', function(socket) {
                     ipdata = JSON.parse(str);
                     // your code here if you want to use the results !
 
-                    if (backendid !== null) backendid.emit('uj', {
+                    if (backendid !== null && allsockets.indexOf(socket) > -1) backendid.emit('uj', {
                         'total': allsockets.length,
                         'id': socket.uid,
                         'latitude': ipdata.latitude || 0,
