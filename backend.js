@@ -1,6 +1,6 @@
-var mapOptions = {
-    center: new google.maps.LatLng(39.50, -98.35),
-    zoom: 4,
+ var mapOptions = {
+    center: new google.maps.LatLng(39.50, -35),
+    zoom: 2,
 };
 
 var sitelist = [];
@@ -30,10 +30,17 @@ google.setOnLoadCallback(drawChart);
 
 function drawChart() {
 
-    var data = google.visualization.arrayToDataTable([
+    chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+    sitesChart();
+
+}
+
+function sitesChart(siteData) {
+
+    if (!siteData || siteData.length < 2) data = google.visualization.arrayToDataTable([
         ['Sites', 'Users'],
         ['Unknown', 0]
-    ]);
+    ]); else data = data = google.visualization.arrayToDataTable(siteData)
 
     var options = {
         title: 'Sites by User',
@@ -53,36 +60,23 @@ function drawChart() {
         }
     };
 
-    chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
-
     chart.draw(data, options);
-
-
 }
 
+
 $(function() {
+   
     var socket = io(document.location.host, {
         'multiplex': true,
         'path': '/socket.io'
     });
 
-
-    var papers = new Object;
-    var viewers = new Object;
     var circles = new Object;
-
+    var userData = new Object;
 
     socket.emit('bc');
 
-    socket.on('ui', function(info) {
-
-        if (!$('#' + info.id).length) {
-            sitelist.push(info.site);
-        } else {
-            sitelist.push('unknown');
-        }
-
-        function countSites(arr) {
+    function countSites(arr) {
             var a = [],
                 b = [],
                 prev;
@@ -101,38 +95,32 @@ $(function() {
             return [a, b];
         }
 
-        chartSites = countSites(sitelist);
-        chartdata = [
+    function formatSites(arr) {
+        output = [
             ['Site', 'Users']
         ];
 
-        for (var i = 0; i < chartSites[0].length; i++) {
-            chartdata.push([chartSites[0][i], chartSites[1][i]]);
+        for (var i = 0; i < arr[0].length; i++) {
+            output.push([arr[0][i], arr[1][i]]);
+        }
+        return output;
+    }
+
+
+
+    socket.on('ui', function(info) {
+
+        if (!$('#' + info.id).length) {
+            userData[info.id] = info.site;
+            sitelist.push(info.site);
+        } else {
+             userData[info.id] = 'unknown';
+            sitelist.push('unknown');
         }
 
-        console.log(chartdata)
-
-        var data = google.visualization.arrayToDataTable(chartdata);
-
-        var options = {
-            title: 'Sites by User',
-            hAxis: {
-                title: 'Site',
-                titleTextStyle: {
-                    color: 'black'
-                }
-            },
-            animation: {
-                duration: 500,
-                easing: 'out',
-            },
-            vAxis: {
-                minValue: 0,
-                maxValue: 50
-            }
-        };
-
-        chart.draw(data, options);
+        chartSites = countSites(sitelist);
+        chartdata = formatSites(chartSites);
+        sitesChart(chartdata);
 
     });
 
@@ -211,7 +199,13 @@ $(function() {
 
     socket.on('ul', function(data) {
         $('#TotalUsers').text(data.susers - 1);
-        $('#' + data.suid).remove();
+
+        sitelist.splice(sitelist.indexOf(userData[data.id]),1);
+
+        chartSites = countSites(sitelist);
+        chartdata = formatSites(chartSites);
+        sitesChart(chartdata);
+
         if (typeof circles[data.suid] !== "undefined") finalAnimation(circles[data.suid]);
         //console.log('A user disconnected with id #' + data.suid);
 
