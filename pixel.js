@@ -3,10 +3,6 @@
 realtime = (function($) {
     //console.log("Starting realtime script");
 
-    if (typeof io === "undefined") {
-        getScript("https://cdn.socket.io/socket.io-1.1.0.js", function(){});
-    }
-
     var socket = io('http://' + document.getElementById('rtpix').src.split('/')[2], {
         'multiplex': false,
         'path': '/socket.io'
@@ -50,8 +46,7 @@ realtime = (function($) {
         }
     }
 
-    socket.on('ok', function() {
-    var site = "Unknown";
+    site = "Unknown";
     self != top ? site = document.referrer.split('/')[2] : site = document.location.hostname;
 
     socket.emit('sui', {
@@ -61,7 +56,7 @@ realtime = (function($) {
     socket.emit('uv', {
         'creatives': rt_creatives,
     });
-    });
+
     var adid = getParameterByName('adid');
     //console.log(adid + " is ad id.");
     if (adid == "") {
