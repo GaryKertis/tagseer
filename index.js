@@ -45,9 +45,13 @@ io.on('connect', function(socket) {
     socket.on('bc', function() {
         backendid = socket;
         console.log(new Date().toString() + "the backend connected.");
+        console.log("io.engine.clientsCount is " + io.engine.clientsCount);
+        console.log("allsockets is " + allsockets.length);
         backendid.on('disconnect', function() {
             backendid = null; 
             console.log(new Date().toString() + "the backend disconnected.");
+            console.log("io.engine.clientsCount is " + io.engine.clientsCount);
+            console.log("allsockets is " + allsockets.length);
             for (i=0;i<allsockets.length;i++) {
                 allsockets[i].disconnect();
             }
@@ -98,7 +102,6 @@ io.on('connect', function(socket) {
                     // your code here if you want to use the results !
 
                     if (backendid !== null) backendid.emit('uj', {
-                        'total': io.engine.clientsCount,
                         'id': socket.uid,
                         'latitude': ipdata.latitude || 0,
                         'longitude': ipdata.longitude || 0
@@ -135,7 +138,6 @@ io.on('connect', function(socket) {
         socket.on('disconnect', function() {
 
             if (backendid !== null) backendid.emit('ul', {
-                susers: io.engine.clientsCount,
                 suid: socket.uid
             });
 
