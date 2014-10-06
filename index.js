@@ -44,19 +44,15 @@ io.on('connect', function(socket) {
 
     socket.on('bc', function() {
         backendid = socket;
-        for (sock in io.sockets.sockets) {
-            if (io.sockets.sockets[sock] != backendid) io.sockets.sockets[sock].disconnect();
-        }
-        for (sock in io.sockets.sockets) {
-            console.log("Socket " + io.sockets.sockets[sock].id + "is connected: " + io.sockets.sockets[sock].connected)
-        };
+
         console.log(new Date().toString() + "the backend connected.");
         console.log("io.sockets.sockets.length is " + io.sockets.sockets.length - 1);
         backendid.on('disconnect', function() {
             backendid = null;
             console.log(new Date().toString() + "the backend disconnected.");
-            for (sock in io.sockets.sockets) {
-                if (io.sockets.sockets[sock] != backendid) io.sockets.sockets[sock].disconnect();
+            allsockets = [];
+            for (var i = 0; i < io.sockets.sockets.length; i++) {
+                if (io.sockets.sockets[i] != backendid) io.sockets.sockets[i].disconnect();
             };
         });
     });
@@ -139,8 +135,35 @@ io.on('connect', function(socket) {
         });
 
 
+        setInterval(function() {
+
+            for (var i = 0; i < io.sockets.sockets.length; i++) {
+
+                var found = false;
+
+                for (var j = 0; j < allsockets.length; j++) {
+                    //console.log('comparing total:' + io.sockets.sockets[i].id + 'with allsockets:' + allsockets[j]);
+
+                    if (io.sockets.sockets[i].id === allsockets[j]) {
+                        found = true;
+                        //console.log("Found match");
+
+                    }
+
+                }
+                if (!found) {
+                    if (io.sockets.sockets[i].id !== backendid.id) {
+                        console.log(io.sockets.sockets[i].id + " was not found and was disconnected.");
+                        io.sockets.sockets[i].disconnect();
+                    }
+                }
+
+            };
+        }, 10000);
 
     }
+
+
 
 });
 
