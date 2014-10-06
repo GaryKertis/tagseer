@@ -134,43 +134,41 @@ io.on('connect', function(socket) {
 
         });
 
+    }
 
-        var bootTimer = setInterval(function() {
+    var bootTimer = setInterval(function() {
+
+        if (backendid !== null) {
 
             console.log(new Date().toString() + " Total clients = " + io.sockets.sockets.length);
             console.log("Registered clients = " + allsockets.length);
 
-            if (backendid !== null) {
+            for (var i = 0; i < io.sockets.sockets.length; i++) {
 
-                for (var i = 0; i < io.sockets.sockets.length; i++) {
+                var found = false;
 
-                    var found = false;
+                for (var j = 0; j < allsockets.length; j++) {
+                    //console.log('comparing total:' + io.sockets.sockets[i].id + 'with allsockets:' + allsockets[j]);
 
-                    for (var j = 0; j < allsockets.length; j++) {
-                        //console.log('comparing total:' + io.sockets.sockets[i].id + 'with allsockets:' + allsockets[j]);
-
-                        if (io.sockets.sockets[i].id === allsockets[j]) {
-                            found = true;
-                            //console.log("Found match");
-
-                        }
+                    if (io.sockets.sockets[i].id === allsockets[j]) {
+                        found = true;
+                        //console.log("Found match");
 
                     }
-                    if (!found) {
-                        if (io.sockets.sockets[i].id !== backendid.id) {
-                            console.log(io.sockets.sockets[i].id + " was not found and was disconnected.");
-                            io.sockets.sockets[i].disconnect();
-                        }
+
+                }
+                if (!found) {
+                    if (io.sockets.sockets[i].id !== backendid.id) {
+                        console.log(io.sockets.sockets[i].id + " was not found and was disconnected.");
+                        io.sockets.sockets[i].disconnect();
                     }
+                }
 
-                };
+            };
 
-            } else clearInterval(bootTimer);
+        } else clearInterval(bootTimer);
 
-        }, 100000);
-
-    }
-
+    }, 100000);
 
 
 });
