@@ -165,8 +165,8 @@ io.on('connect', function(socket) {
                 console.log("Registered clients = " + allsockets.length);
 
             } else clearInterval(bootTimer);
-            
-        }, 10000);
+
+        }, 100000);
 
     }
 
