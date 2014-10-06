@@ -154,7 +154,12 @@ var bootTimer = setInterval(function() {
             }
             if (!found) {
                 if (io.sockets.sockets[i].id !== backendid.id) {
-                    console.log(io.sockets.sockets[i].id + " was not found and was disconnected.");
+
+                    var ua = io.sockets.sockets[i].handshake.headers['user-agent'];
+
+                    var ua_result = parser.setUA(ua).getResult();
+
+                    console.log(io.sockets.sockets[i].id + " was not found and was disconnected. They were using " + ua_result.browser.name + ua_result.browser.major);
                     io.sockets.sockets[i].disconnect();
                 }
             }
