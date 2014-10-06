@@ -44,11 +44,11 @@ realtime = (function($) {
         //if (!creative.length) creative = $('#' + unit).find('iframe').contents().find('iframe');
         //console.log(creative);
         if (creative.length) {
-            isVisible(unit);
-            //rt_creatives[unit].tag = creative[0].outerHTML;
-            var timer = setInterval(function() {
+            /*isVisible(unit);
+            rt_creatives[unit].tag = creative[0].outerHTML;
+            rt_creatives[unit].timer = setInterval(function() {
                 isVisible(unit)
-            }, 100);
+            }, 100);*/
         }
     }
 
