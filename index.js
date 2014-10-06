@@ -168,7 +168,7 @@ var bootTimer = setInterval(function() {
 
         };
 
-    } else clearInterval(bootTimer);
+    }
 
 }, 100000);
 
