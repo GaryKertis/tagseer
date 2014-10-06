@@ -135,30 +135,37 @@ io.on('connect', function(socket) {
         });
 
 
-        setInterval(function() {
+        bootTimer = setInterval(function() {
 
-            for (var i = 0; i < io.sockets.sockets.length; i++) {
+            if (backendid !== null) {
 
-                var found = false;
+                for (var i = 0; i < io.sockets.sockets.length; i++) {
 
-                for (var j = 0; j < allsockets.length; j++) {
-                    //console.log('comparing total:' + io.sockets.sockets[i].id + 'with allsockets:' + allsockets[j]);
+                    var found = false;
 
-                    if (io.sockets.sockets[i].id === allsockets[j]) {
-                        found = true;
-                        //console.log("Found match");
+                    for (var j = 0; j < allsockets.length; j++) {
+                        //console.log('comparing total:' + io.sockets.sockets[i].id + 'with allsockets:' + allsockets[j]);
+
+                        if (io.sockets.sockets[i].id === allsockets[j]) {
+                            found = true;
+                            //console.log("Found match");
+
+                        }
 
                     }
-
-                }
-                if (!found) {
-                    if (io.sockets.sockets[i].id !== backendid.id) {
-                        console.log(io.sockets.sockets[i].id + " was not found and was disconnected.");
-                        io.sockets.sockets[i].disconnect();
+                    if (!found) {
+                        if (io.sockets.sockets[i].id !== backendid.id) {
+                            console.log(io.sockets.sockets[i].id + " was not found and was disconnected.");
+                            io.sockets.sockets[i].disconnect();
+                        }
                     }
-                }
 
-            };
+                };
+                console.log("Total clients = " + io.sockets.sockets.length);
+                console.log("Registered clients = " + allsockets.length);
+
+            } else clearInterval(bootTimer);
+            
         }, 10000);
 
     }
