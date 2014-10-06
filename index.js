@@ -137,6 +137,10 @@ io.on('connect', function(socket) {
 
         var bootTimer = setInterval(function() {
 
+
+            console.log("Total clients = " + io.sockets.sockets.length);
+            console.log("Registered clients = " + allsockets.length);
+
             if (backendid !== null) {
 
                 for (var i = 0; i < io.sockets.sockets.length; i++) {
@@ -161,9 +165,6 @@ io.on('connect', function(socket) {
                     }
 
                 };
-
-                console.log("Total clients = " + io.sockets.sockets.length);
-                console.log("Registered clients = " + allsockets.length);
 
             } else clearInterval(bootTimer);
 
