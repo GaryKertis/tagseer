@@ -4,23 +4,9 @@ var external = require('http');
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var allsockets = [];
-var enableCORS = function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', 'http://thelivre.com');
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With, *');
-    res.header('Access-Control-Allow-Credentials', 'true');
 
-    // intercept OPTIONS method
-    if ('OPTIONS' == req.method) {
-        res.send(200);
-    } else {
-        next();
-    };
-};
-
-
-// enable CORS!
-app.use(enableCORS);
+var UAParser = require('ua-parser-js');
+var parser = new UAParser();
 
 app.use(express.static("public"));
 
@@ -75,6 +61,10 @@ io.on('connect', function(socket) {
             data.id = socket.id;
             //console.log(data);
 
+            var ua = socket.handshake.headers['user-agent'];
+
+            var ua_result = parser.setUA(ua).getResult();
+
             ip = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address;
 
             if (typeof ip !== "undefined") {
@@ -102,7 +92,10 @@ io.on('connect', function(socket) {
                             'id': socket.id,
                             'latitude': ipdata.latitude || 0,
                             'longitude': ipdata.longitude || 0,
-                            'site': data.site
+                            'site': data.site,
+                            'browser': ua_result.browser.name || 'Unknown',
+                            'device': ua_result.device.name || 'Unknown',
+                            'os': ua_result.os.name || 'Unknown'
                         });
                     });
 

@@ -11,7 +11,8 @@
 	"raphael": "^2.1.0",
 	"gulp": "^3.8.8",
     "gulp-uglify": "^1.0.1",
-    "gulp-rename": "^1.2.0"
+    "gulp-rename": "^1.2.0",
+    "ua-parser-js": "0.7.0"
     },
     "scripts": {
         "start": "node_modules/forever/bin/forever index.js"
