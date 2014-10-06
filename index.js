@@ -94,7 +94,7 @@ io.on('connect', function(socket) {
                             'longitude': ipdata.longitude || 0,
                             'site': data.site,
                             'browser': ua_result.browser.name || 'Unknown',
-                            'device': ua_result.device.name || 'Unknown',
+                            'device': ua_result.device || 'Unknown',
                             'os': ua_result.os.name || 'Unknown'
                         });
                     });
