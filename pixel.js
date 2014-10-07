@@ -1,5 +1,4 @@
 // Only do anything if jQuery isn't defined
-
 realtime = (function($) {
     //console.log("Starting realtime script");
     site = "Unknown";
@@ -10,16 +9,8 @@ realtime = (function($) {
         'path': '/socket.io'
     });
 
-    socket.emit('sui', {
-        'site': site
-    });
-
-    var rt_creatives = new Object;
-
-    var pm_bids = {
-        "bidid": [],
-        "bid": []
-    };
+    var rt = new Object;
+    var context;
 
     var scriptid = document.getElementById('rtpix').src;
     //console.log(scriptid + " is script id.");
@@ -32,78 +23,31 @@ realtime = (function($) {
     }
 
     function findCreative(unit) {
-        //console.log(unit + " is unit name.");
-        rt_creatives[unit] = {
-            id: unit
-        };
 
-        self != top ? creative = $('#' + unit, window.parent.document) : creative = $('#' + unit);
+        if (self != top) {
+            context = window.parent.document;
+            creative = $('#' + unit, context);
+        } else {
+            context = window;
+            creative = $('#' + unit);
+        }
 
-        //if (!creative.length) creative = $('#' + unit).find('iframe').contents().find('object');
-        //if (!creative.length) creative = $('#' + unit).find('iframe').contents().find('img');
-        //if (!creative.length) creative = $('#' + unit).find('iframe').contents().find('iframe');
-        //console.log(creative);
         if (creative.length) {
-            isVisible(unit);
-            /*rt_creatives[unit].tag = creative[0].outerHTML;
-            rt_creatives[unit].timer = setInterval(function() {
-                isVisible(unit)
-            }, 100);*/
+            isVisible(creative);
         }
     }
-
-    socket.emit('uv', {
-        'creatives': rt_creatives,
-    });
 
     var adid = getParameterByName('adid');
     //console.log(adid + " is ad id.");
-    if (adid == "") {
-        if (typeof googletag !== 'undefined') {
+    if (adid != "") findCreative(adid); else rt.v = 'Unknown';
 
-            if (typeof progKeyValueMap !== 'undefined') {
-                for (slot in progKeyValueMap) {
+    socket.emit('sui', {
+        'site': site,
+        'c': rt,
+    });
 
-                    progKeyValueMap[slot].indexOf(';') > 0 ? this_slot = progKeyValueMap[slot].split(";") : this_slot = progKeyValueMap[slot].split("=");
-                    if (this_slot[0] == "bidstatus") {
-                        pm_bids.bidid.push(this_slot[5]);
-                        pm_bids.bid.push(this_slot[3]);
-                    } else {
-                        pm_bids.bidid.push(this_slot[3]);
-                        pm_bids.bid.push(this_slot[1]);
-                    }
-                }
-            }
+    function isVisible(creative) {
 
-            for (unit in googletag.slot_manager_instance.b) {
-                findCreative(unit);
-
-
-                for (arr in googletag.slot_manager_instance.b[unit].d) {
-                    for (number in pm_bids.bidid) {
-                        if (googletag.slot_manager_instance.b[unit].d[arr][0] == pm_bids.bidid[number]) {
-                            rt_creatives[unit].pm_bid = pm_bids.bid[number];
-                        }
-
-                    }
-                }
-            }
-
-        }
-
-    } else {
-        ads = adid.split(',')
-        for (var i = 0; i < ads.length; i++) {
-            findCreative(ads[i]);
-        }
-    }
-
-    function isVisible(unit) {
-        var context;
-        self != top ? context = window.parent.document : context = "";
-
-        var creative = $('#' + unit, context);
-        //console.log(creative + ' is creative');
         upperBound = creative.offset().top;
         lowerBound = upperBound + creative.height();
 
@@ -124,12 +68,12 @@ realtime = (function($) {
         //both top of unit is below top of window and bottom of unit is above bottom of window
         //--100% in view.
 
-        /*console.log('Unit name is: ' + unit);
+        /*console.log('Unit name is: ' + creative.attr('id'));
         console.log("upperBound is " + upperBound);
         console.log("lowerBound is " + lowerBound);
         console.log("vp_upperBound is " + vp_upperBound);
         console.log("vp_lowerBound is " + vp_lowerBound);
-        console.log("Unit height is " + $('#' + unit).height());*/
+        console.log("Unit height is " + creative.height());*/
 
         if (upperBound > vp_lowerBound && lowerBound > vp_lowerBound || lowerBound < vp_upperBound && upperBound < vp_upperBound) {
             //0
@@ -147,14 +91,9 @@ realtime = (function($) {
             //console.log('should never get here');
         }
 
-        rt_creatives[unit].visible = Math.round(inview * 100) / 100;
-        //console.log(rt_creatives[unit].id + ' visibility is ' + rt_creatives[unit].visible);
+        rt.v = Math.round(inview * 100) / 100;
+            //console.log(creative.attr('id') + ' visibility is ' + rt.v);
 
-        socket.emit('uv', {
-            'creatives': rt_creatives,
-        });
-
-    //console.log('site is' + document.location.hostname);
     }
 });
 

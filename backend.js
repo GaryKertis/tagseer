@@ -108,7 +108,7 @@
      });
 
      var circles = new Object;
-     
+
      socket.emit('bc');
 
      function formatChartData(arr) {
@@ -144,57 +144,18 @@
          browserChart(formatChartData(browserlist));
      }
 
-
-
-     socket.on('ui', function(info) {
-
-
-
-     });
-
-     socket.on('ubv', function(info) {
-         for (var n in info.creatives) {
-             creative = info.creatives[n];
-             if (typeof circles[info.id] !== "undefined") {
-                 if (typeof creative.visible === "number") {
-
-                     if (creative.visible > 0) {
-                         //console.log(creative.visible);
-                         var icon = circles[info.id].get('icon')
-                         icon.fillColor = "green";
-                         icon.strokeColor = "green"
-                         icon.fillOpacity = creative.visible;
-                         circles[info.id].set('icon', icon);
-                     }
-
-                     if (creative.visible <= 0) {
-                         var icon = circles[info.id].get('icon')
-                         icon.strokeColor = "red";
-                         icon.fillColor = "red";
-                         icon.fillOpacity = .05;
-                         circles[info.id].set('icon', icon);
-                     }
-                 }
-             }
-
-             /*
-        $('#'+info.id + ' #'+creative.id).text("Visible: " + creative.visible);
-        */
-         }
-     });
-
      socket.on('uj', function(data) {
          //console.log('A user joined with id #' + data.id + " at " + data.latitude + "," + data.longitude);
 
          $('#TotalUsers').text(data.total);
 
-         var populationOptions = {
+         var mapOptions = {
              icon: {
                  path: google.maps.SymbolPath.CIRCLE,
                  fillOpacity: 0.05,
-                 fillColor: '#ff0000',
+                 fillColor: 'black',
                  strokeOpacity: 1.0,
-                 strokeColor: '#ff0000',
+                 strokeColor: 'black',
                  strokeWeight: 30,
                  scale: 5 //pixels
              },
@@ -202,12 +163,33 @@
              position: new google.maps.LatLng(data.latitude, data.longitude),
          };
          // Add the circle for this city to the map.
-         circles[data.id] = new google.maps.Marker(populationOptions);
+         circles[data.id] = new google.maps.Marker(mapOptions);
 
          if (typeof circles[data.id] !== "undefined") initialAnimation(circles[data.id]);
 
          function initialAnimation(marker) {
              var count = 30;
+
+             if (typeof data.creatives.v === "number") {
+                 console.log(data.creatives.v);
+
+                 if (data.creatives.v > 0) {
+                     var icon = marker.get('icon')
+                     icon.fillColor = "green";
+                     icon.strokeColor = "green"
+                     icon.strokeOpacity = data.creatives.v;
+                     icon.fillOpacity = data.creatives.v;
+                 }
+
+                 if (data.creatives.v <= 0) {
+                     var icon = marker.get('icon')
+                     icon.strokeColor = "red";
+                     icon.fillColor = "red";
+                     icon.fillOpacity = .05;
+                 }
+             }
+
+
              var timer = window.setInterval(function() {
                  count--;
                  var icon = marker.get('icon');
@@ -231,6 +213,7 @@
          browserlist.push(data.browser);
 
          updateCharts();
+
 
      });
 

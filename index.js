@@ -32,7 +32,6 @@ io.on('connect', function(socket) {
         backendid = socket;
 
         console.log(new Date().toString() + "the backend connected.");
-        console.log("io.sockets.sockets.length is " + io.sockets.sockets.length - 1);
         backendid.on('disconnect', function() {
             backendid = null;
             console.log(new Date().toString() + "the backend disconnected.");
@@ -88,14 +87,15 @@ io.on('connect', function(socket) {
                         // your code here if you want to use the results !
 
                         if (backendid !== null && socket.connected) backendid.emit('uj', {
-                            'total': allsockets.length,
+                            'total': allsockets.length || 0,
                             'id': socket.id,
                             'latitude': ipdata.latitude || 0,
                             'longitude': ipdata.longitude || 0,
                             'site': data.site,
                             'browser': ua_result.browser.name + ua_result.browser.major || 'Unknown',
                             'device': ua_result.device.model + ua_result.device.vendor || 'Unknown',
-                            'os': ua_result.os.name || 'Unknown'
+                            'os': ua_result.os.name || 'Unknown',
+                            'creatives': data.c
                         });
                     });
 
@@ -118,12 +118,6 @@ io.on('connect', function(socket) {
             });
 
             //console.log(new Date().toString() + " a user joined, id #" + socket.uid);
-
-            socket.on('uv', function(data) {
-                data.id = socket.id;
-                if (backendid !== null) backendid.emit('ubv', data);
-            });
-
 
         });
 
@@ -159,7 +153,7 @@ var bootTimer = setInterval(function() {
 
                     var ua_result = parser.setUA(ua).getResult();
 
-                    console.log(io.sockets.sockets[i].id + " was not found and was disconnected. They were using " + ua_result.browser.name + ua_result.browser.major);
+                    //console.log(io.sockets.sockets[i].id + " was not found and was disconnected. They were using " + ua_result.browser.name + ua_result.browser.major);
                     io.sockets.sockets[i].disconnect();
                 }
             }
