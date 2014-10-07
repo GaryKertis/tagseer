@@ -37,8 +37,7 @@
      chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
      piechart = new google.visualization.PieChart(document.getElementById('piechart'));
 
-     sitesChart();
-     browserChart();
+     updateCharts();
 
  }
 

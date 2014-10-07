@@ -92,8 +92,8 @@ io.on('connect', function(socket) {
                             'latitude': ipdata.latitude || 0,
                             'longitude': ipdata.longitude || 0,
                             'site': data.site,
-                            'browser': ua_result.browser.name + ua_result.browser.major || 'Unknown',
-                            'device': ua_result.device.model + ua_result.device.vendor || 'Unknown',
+                            'browser': ua_result.browser.name || 'Unknown',
+                            'device': ua_result.device.vendor + ' ' + ua_result.device.model || 'Unknown',
                             'os': ua_result.os.name || 'Unknown',
                             'creatives': data.c
                         });
