@@ -153,9 +153,9 @@
              icon: {
                  path: google.maps.SymbolPath.CIRCLE,
                  fillOpacity: 0.05,
-                 fillColor: 'black',
+                 fillColor: 'blue',
                  strokeOpacity: 1.0,
-                 strokeColor: 'black',
+                 strokeColor: 'blue',
                  strokeWeight: 30,
                  scale: 5 //pixels
              },
