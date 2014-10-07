@@ -5,6 +5,8 @@
 
  var sitelist = [];
  var browserlist = [];
+ var userData = new Object;
+
 
  var chart;
  var browserchart;
@@ -106,11 +108,10 @@
      });
 
      var circles = new Object;
-     var userData = new Object;
-
+     
      socket.emit('bc');
 
-     function countSites(arr) {
+     function formatChartData(arr) {
          var a = [],
              b = [],
              prev;
@@ -126,18 +127,21 @@
              prev = arr[i];
          }
 
-         return [a, b];
-     }
+         formatted = [a, b];
 
-     function formatSites(arr) {
          output = [
              ['Site', 'Users']
          ];
 
-         for (var i = 0; i < arr[0].length; i++) {
-             output.push([arr[0][i], arr[1][i]]);
+         for (var i = 0; i < formatted[0].length; i++) {
+             output.push([formatted[0][i], formatted[1][i]]);
          }
          return output;
+     }
+
+     function updateCharts() {
+         sitesChart(formatChartData(sitelist));
+         browserChart(formatChartData(browserlist));
      }
 
 
@@ -226,13 +230,7 @@
          userData[data.id].browser = data.browser;
          browserlist.push(data.browser);
 
-         chartSites = countSites(sitelist);
-         chartdata = formatSites(chartSites);
-         sitesChart(chartdata);
-
-         chartBrowser = countSites(browserlist);
-         browserData = formatSites(chartBrowser);
-         browserChart(browserData);
+         updateCharts();
 
      });
 
@@ -243,16 +241,9 @@
          $('#TotalUsers').text(data.susers);
 
          sitelist.splice(sitelist.indexOf(userData[data.suid].site), 1);
+         browserlist.splice(browserlist.indexOf(userData[data.suid].browser), 1);
 
-         chartSites = countSites(sitelist);
-         chartdata = formatSites(chartSites);
-         sitesChart(chartdata);
-
-         browserlist.splice(sitelist.indexOf(userData[data.suid].browser), 1);
-
-         chartBrowser = countSites(browserlist);
-         browserData = formatSites(chartBrowser);
-         browserChart(browserData);
+         updateCharts();
 
          if (typeof circles[data.suid] !== "undefined") finalAnimation(circles[data.suid]);
          //console.log('A user disconnected with id #' + data.suid);
