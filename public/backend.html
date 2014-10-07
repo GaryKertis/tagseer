@@ -20,35 +20,50 @@
     .header {
         font-family: 'Press Start 2P', cursive;
     }
+
+    .impression-counter {
+        text-align: center;
+    }
     </style>
 
 </head>
 
 <body>
 
-        <div class="container">
-            <div class="page-header">
-                <h3 class="header">
-                    <!--Tag Seer-->
-                </h3>
-                <h5>Connected Users:
-                    <span id="TotalUsers" class="label label-default"></span>
-                </h5>
-            </div>
-            <div id="charts" class="container">
-                <div id="map-canvas" class="row"></div>
-                <div id="chart_div" class="row" style="height: 300px;"></div>
-                <div id="piechart" class="row" style="height: 300px;"></div>
-            </div>
+    <div class="container">
+        <div class="page-header">
+            <h3 class="header">
+                <!--Tag Seer-->
+            </h3>
+            <h5>Connected Users:
+                <span id="TotalUsers" class="label label-default">0</span>
+            </h5>
+
         </div>
-        <script src="https://cdn.socket.io/socket.io-1.1.0.js"></script>
-        <script src="raphael-min.js"></script>
-        <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBH5tjVmw-7mstFrGW6-hAE8U0MqEJMdTw">
-        </script>
-        <script src="backend.js"></script>
-        
-    </body>
+        <div id="charts" class="container">
+            <div id="userchart" class="row" style="height: 300px;"></div>
+            <div class="row">
+                <div class="col-xs-3 impression-counter">
+                    <h2>
+                        <span id="Impressions" class="label label-primary">0</span>
+                    </h2>
+                    <h5>Impressions</h5>
+
+                </div>
+                <div id="map-canvas" class="col-xs-9"></div>
+            </div>
+            <div id="chart_div" class="row" style="height: 300px;"></div>
+            <div id="piechart" class="row" style="height: 300px;"></div>
+        </div>
+    </div>
+    <script src="https://cdn.socket.io/socket.io-1.1.0.js"></script>
+    <script src="raphael-min.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBH5tjVmw-7mstFrGW6-hAE8U0MqEJMdTw">
+    </script>
+    <script src="backend.js"></script>
+
+</body>
 
 </html>
